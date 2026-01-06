@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Browse Wheelchairs - MobilityKSA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .filter-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: var(--bg-secondary);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-input);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        .search-input-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--bg-input);
+            border-radius: var(--radius-md);
+        }
+
+        .search-input-wrapper input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .search-input-wrapper input:focus {
+            outline: none;
+        }
+
+        .filter-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary);
+            border-radius: var(--radius-md);
+            color: white;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .filter-indicator {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 16px;
+            height: 16px;
+            background: var(--error);
+            border-radius: 50%;
+            font-size: 0.625rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .results-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md);
+        }
+
+        .results-count {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .sort-btn {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            color: var(--primary-light);
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+
+        .wheelchair-list {
+            padding: 0 var(--spacing-md);
+        }
+
+        .wheelchair-card-full {
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            margin-bottom: var(--spacing-md);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .wheelchair-card-full:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary-light);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .wheelchair-card-image {
+            height: 180px;
+            background: var(--bg-input);
+            position: relative;
+        }
+
+        .wheelchair-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .wheelchair-badge-overlay {
+            position: absolute;
+            top: var(--spacing-sm);
+            left: var(--spacing-sm);
+        }
+
+        .favorite-btn {
+            position: absolute;
+            top: var(--spacing-sm);
+            right: var(--spacing-sm);
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .favorite-btn.active {
+            color: var(--error);
+        }
+
+        .wheelchair-card-body {
+            padding: var(--spacing-md);
+        }
+
+        .wheelchair-card-title {
+            font-weight: 600;
+            font-size: 1.125rem;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .wheelchair-card-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .wheelchair-card-specs {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .spec-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .spec-item i {
+            color: var(--primary-light);
+        }
+
+        .wheelchair-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .wheelchair-card-price {
+            display: flex;
+            align-items: baseline;
+            gap: var(--spacing-xs);
+        }
+
+        .card-price-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .card-price-unit {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .book-now-btn {
+            padding: var(--spacing-sm) var(--spacing-lg);
+            background: var(--gradient-primary);
+            border-radius: var(--radius-md);
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .book-now-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Filter Modal */
+        .filter-modal {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 430px;
+            max-height: 80vh;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            z-index: 1000;
+            display: none;
+        }
+
+        .filter-modal.active {
+            display: block;
+        }
+
+        .filter-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .filter-modal-title {
+            font-weight: 600;
+            font-size: 1.125rem;
+        }
+
+        .close-modal {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-input);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .filter-modal-body {
+            padding: var(--spacing-md);
+            overflow-y: auto;
+            max-height: calc(80vh - 140px);
+        }
+
+        .filter-section {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .filter-section-title {
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .filter-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+        }
+
+        .filter-chip {
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .filter-chip.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .filter-modal-footer {
+            display: flex;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            border-top: 1px solid var(--border);
+        }
+
+        .filter-modal-footer button {
+            flex: 1;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        .modal-overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="mobile-container">
+        <div class="screen">
+            <!-- Filter Header -->
+            <div class="filter-header">
+                <div class="back-btn" onclick="window.location.href='home.html'">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </div>
+                <div class="search-input-wrapper">
+                    <i class="fa-solid fa-search" style="color: var(--text-muted);"></i>
+                    <input type="text" placeholder="Search wheelchairs...">
+                </div>
+                <div class="filter-btn" onclick="openFilter()">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span class="filter-indicator">2</span>
+                </div>
+            </div>
+
+            <!-- Category Pills -->
+            <div style="padding: var(--spacing-md);">
+                <div class="category-pills">
+                    <div class="category-pill active">All</div>
+                    <div class="category-pill">Standard</div>
+                    <div class="category-pill">Premium</div>
+                    <div class="category-pill">Heavy Duty</div>
+                    <div class="category-pill">Foldable</div>
+                </div>
+            </div>
+
+            <!-- Results Info -->
+            <div class="results-info">
+                <span class="results-count">12 wheelchairs available</span>
+                <div class="sort-btn">
+                    <i class="fa-solid fa-arrow-up-short-wide"></i>
+                    Price: Low to High
+                </div>
+            </div>
+
+            <!-- Wheelchair List -->
+            <div class="screen-content" style="padding-top: 0; padding-bottom: 100px;">
+                <div class="wheelchair-list">
+                    <!-- Wheelchair 1 -->
+                    <div class="wheelchair-card-full" onclick="window.location.href='wheelchair-detail.html'">
+                        <div class="wheelchair-card-image">
+                            <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&h=300&fit=crop"
+                                alt="Standard Electric Wheelchair">
+                            <div class="wheelchair-badge-overlay">
+                                <span class="status-badge status-available">Available</span>
+                            </div>
+                            <div class="favorite-btn"
+                                onclick="event.stopPropagation(); this.classList.toggle('active')">
+                                <i class="fa-solid fa-heart"></i>
+                            </div>
+                        </div>
+                        <div class="wheelchair-card-body">
+                            <h3 class="wheelchair-card-title">Standard Electric Wheelchair</h3>
+                            <p class="wheelchair-card-subtitle">Compact & Easy to Use</p>
+                            <div class="wheelchair-card-specs">
+                                <div class="spec-item">
+                                    <i class="fa-solid fa-battery-full"></i>
+                                    <span>20km range</span>
+                                </div>
+                                <div class="spec-item">
+                                    <i class="fa-solid fa-weight-hanging"></i>
+                                    <span>100kg max</span>
+                                </div>
+                                <div class="spec-item">
+                                    <i class="fa-solid fa-gauge-high"></i>
+                                    <span>6 km/h</span>
+                                </div>
+                            </div>
+                            <div class="wheelchair-card-footer">
+                                <div class="wheelchair-card-price">
+                                    <span class="card-price-amount">SAR 50</span>
+                                    <span class="card-price-unit">/ day</span>
+                                </div>
+                                <div class="book-now-btn">Book Now</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Wheelchair 2 -->
+                    <div class="wheelchair-card-full" onclick="window.location.href='wheelchair-detail.html'">
+                        <div class="wheelchair-card-image">
+                            <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=300&fit=crop"
+                                alt="Premium Electric Wheelchair">
+                            <div class="wheelchair-badge-overlay">
+                                <span class="status-badge status-available">Available</span>
+                            </div>
+                            <div class="favorite-btn"
+                                onclick="event.stopPropagation(); this.classList.toggle('active')">
+                                <i class="fa-solid fa-heart"></i>
+                            </div>
+                        </div>
+                        <div class="wheelchair-card-body">
+                            <h3 class="wheelchair-card-title">Premium Electric Wheelchair</h3>
+                            <p class="wheelchair-card-subtitle">Advanced Features & Comfort</p>
+                            <div class="wheelchair-card-specs">
+                                <div class="spec-item">
+                                    <i class="fa-solid fa-battery-full"></i>
+                                    <span>30km range</span>
+                                </div>
+                                <div class="spec-item">
+                                    <i class="fa-solid fa-weight-hanging"></i>
+                                    <span>150kg max</span>
+                                </div>
+                                <div class="spec-item">
+                                    <i class="fa-solid fa-gauge-high"></i>
+                                    <span>8 km/h</span>
+                                </div>
+                            </div>
+                            <div class="wheelchair-card-footer">
+                                <div class="wheelchair-card-price">
+                                    <span class="card-price-amount">SAR 100</span>
+                                    <span class="card-price-unit">/ day</span>
+                                </div>
+                                <div class="book-now-btn">Book Now</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Wheelchair 3 -->
+                    <div class="wheelchair-card-full" onclick="window.location.href='wheelchair-detail.html'">
+                        <div class="wheelchair-card-image">
+                            <img src="https://images.unsplash.com/photo-1631815587646-b85a1bb027e1?w=400&h=300&fit=crop"
+                                alt="Heavy Duty Wheelchair">
+                            <div class="wheelchair-badge-overlay">
+                                <span class="status-badge status-rented">Rented</span>
+                            </div>
+                            <div class="favorite-btn"
+                                onclick="event.stopPropagation(); this.classList.toggle('active')">
+                                <i class="fa-solid fa-heart"></i>
+                            </div>
+                        </div>
+                        <div class="wheelchair-card-body">
+                            <h3 class="wheelchair-card-title">Heavy Duty Electric Wheelchair</h3>
+                            <p class="wheelchair-card-subtitle">Maximum Support & Durability</p>
+                            <div class="wheelchair-card-specs">
+                                <div class="spec-item">
+                                    <i class="fa-solid fa-battery-full"></i>
+                                    <span>25km range</span>
+                                </div>
+                                <div class="spec-item">
+                                    <i class="fa-solid fa-weight-hanging"></i>
+                                    <span>200kg max</span>
+                                </div>
+                                <div class="spec-item">
+                                    <i class="fa-solid fa-gauge-high"></i>
+                                    <span>6 km/h</span>
+                                </div>
+                            </div>
+                            <div class="wheelchair-card-footer">
+                                <div class="wheelchair-card-price">
+                                    <span class="card-price-amount">SAR 150</span>
+                                    <span class="card-price-unit">/ day</span>
+                                </div>
+                                <div class="book-now-btn" style="opacity: 0.5; cursor: not-allowed;">Not Available</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Navigation -->
+            <nav class="bottom-nav">
+                <a href="home.html" class="nav-item">
+                    <i class="fa-solid fa-home nav-icon"></i>
+                    <span class="nav-label">Home</span>
+                </a>
+                <a href="wheelchairs.html" class="nav-item active">
+                    <i class="fa-solid fa-wheelchair nav-icon"></i>
+                    <span class="nav-label">Browse</span>
+                </a>
+                <a href="bookings.html" class="nav-item">
+                    <i class="fa-solid fa-receipt nav-icon"></i>
+                    <span class="nav-label">Bookings</span>
+                </a>
+                <a href="profile.html" class="nav-item">
+                    <i class="fa-solid fa-user nav-icon"></i>
+                    <span class="nav-label">Profile</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- Filter Modal -->
+        <div class="modal-overlay" id="modal-overlay" onclick="closeFilter()"></div>
+        <div class="filter-modal" id="filter-modal">
+            <div class="filter-modal-header">
+                <h3 class="filter-modal-title">Filter</h3>
+                <div class="close-modal" onclick="closeFilter()">
+                    <i class="fa-solid fa-times"></i>
+                </div>
+            </div>
+            <div class="filter-modal-body">
+                <div class="filter-section">
+                    <h4 class="filter-section-title">Wheelchair Type</h4>
+                    <div class="filter-chips">
+                        <div class="filter-chip active">All Types</div>
+                        <div class="filter-chip">Standard</div>
+                        <div class="filter-chip">Premium</div>
+                        <div class="filter-chip">Heavy Duty</div>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <h4 class="filter-section-title">Battery Range</h4>
+                    <div class="filter-chips">
+                        <div class="filter-chip active">Any</div>
+                        <div class="filter-chip">10+ km</div>
+                        <div class="filter-chip">20+ km</div>
+                        <div class="filter-chip">30+ km</div>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <h4 class="filter-section-title">Weight Capacity</h4>
+                    <div class="filter-chips">
+                        <div class="filter-chip active">Any</div>
+                        <div class="filter-chip">Up to 100kg</div>
+                        <div class="filter-chip">Up to 150kg</div>
+                        <div class="filter-chip">150kg+</div>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <h4 class="filter-section-title">Price Range (per day)</h4>
+                    <div class="filter-chips">
+                        <div class="filter-chip active">Any</div>
+                        <div class="filter-chip">Under SAR 60</div>
+                        <div class="filter-chip">SAR 60 - 100</div>
+                        <div class="filter-chip">SAR 100+</div>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <h4 class="filter-section-title">Features</h4>
+                    <div class="filter-chips">
+                        <div class="filter-chip">Foldable</div>
+                        <div class="filter-chip">All-terrain</div>
+                        <div class="filter-chip">Reclining</div>
+                        <div class="filter-chip">Joystick Control</div>
+                    </div>
+                </div>
+            </div>
+            <div class="filter-modal-footer">
+                <button class="btn btn-secondary" onclick="resetFilters()">Reset</button>
+                <button class="btn btn-primary" onclick="applyFilters()">Apply Filters</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openFilter() {
+            document.getElementById('modal-overlay').classList.add('active');
+            document.getElementById('filter-modal').classList.add('active');
+        }
+
+        function closeFilter() {
+            document.getElementById('modal-overlay').classList.remove('active');
+            document.getElementById('filter-modal').classList.remove('active');
+        }
+
+        function resetFilters() {
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.classList.remove('active');
+            });
+            document.querySelectorAll('.filter-chip:first-child').forEach(chip => {
+                chip.classList.add('active');
+            });
+        }
+
+        function applyFilters() {
+            closeFilter();
+            // Apply filters logic here
+        }
+
+        // Filter chip toggle
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', function () {
+                const parent = this.parentElement;
+                parent.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Category pill toggle
+        document.querySelectorAll('.category-pill').forEach(pill => {
+            pill.addEventListener('click', function () {
+                document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+
+</html>

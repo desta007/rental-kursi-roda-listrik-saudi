@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Complete Profile - MobilityKSA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .register-screen {
+            min-height: 100vh;
+            padding: var(--spacing-md);
+        }
+
+        .register-header {
+            text-align: center;
+            padding: var(--spacing-lg) 0;
+        }
+
+        .register-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-md);
+        }
+
+        .register-icon i {
+            font-size: 2rem;
+            color: white;
+        }
+
+        .register-title {
+            font-size: 1.5rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .register-subtitle {
+            color: var(--text-secondary);
+        }
+
+        .steps-indicator {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            margin: var(--spacing-lg) 0;
+        }
+
+        .step-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--border);
+        }
+
+        .step-dot.active {
+            width: 24px;
+            border-radius: 4px;
+            background: var(--primary);
+        }
+
+        .step-dot.completed {
+            background: var(--primary);
+        }
+
+        .id-upload-box {
+            border: 2px dashed var(--border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-2xl);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .id-upload-box:hover {
+            border-color: var(--primary-light);
+            background: rgba(27, 77, 62, 0.1);
+        }
+
+        .id-upload-icon {
+            font-size: 3rem;
+            color: var(--primary-light);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .id-upload-text {
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .id-upload-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .id-type-selector {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .id-type-option {
+            flex: 1;
+            padding: var(--spacing-md);
+            background: var(--bg-input);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .id-type-option.selected {
+            border-color: var(--primary);
+            background: rgba(27, 77, 62, 0.2);
+        }
+
+        .id-type-option i {
+            font-size: 1.5rem;
+            color: var(--primary-light);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .id-type-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .language-option {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: var(--bg-input);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-sm);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .language-option.selected {
+            border-color: var(--primary);
+            background: rgba(27, 77, 62, 0.2);
+        }
+
+        .language-flag {
+            font-size: 1.5rem;
+        }
+
+        .language-info {
+            flex: 1;
+        }
+
+        .language-name {
+            font-weight: 500;
+        }
+
+        .language-native {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .check-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            opacity: 0;
+            transition: opacity var(--transition-fast);
+        }
+
+        .language-option.selected .check-icon {
+            opacity: 1;
+        }
+
+        .form-section {
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .form-section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .form-section-title i {
+            color: var(--primary-light);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 430px;
+            background: var(--bg-primary);
+            border-top: 1px solid var(--border);
+        }
+
+        .skip-btn {
+            flex: 1;
+        }
+
+        .continue-btn {
+            flex: 2;
+        }
+
+        .upload-preview {
+            position: relative;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .upload-preview img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .upload-preview-actions {
+            position: absolute;
+            bottom: var(--spacing-md);
+            right: var(--spacing-md);
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .preview-action-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .preview-action-btn:hover {
+            background: var(--error);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="mobile-container">
+        <div class="register-screen">
+            <!-- Header -->
+            <div class="register-header">
+                <div class="register-icon">
+                    <i class="fa-solid fa-user-plus"></i>
+                </div>
+                <h1 class="register-title">Complete Your Profile</h1>
+                <p class="register-subtitle">We need a few details to get you started</p>
+            </div>
+
+            <!-- Steps Indicator -->
+            <div class="steps-indicator">
+                <div class="step-dot active"></div>
+                <div class="step-dot"></div>
+                <div class="step-dot"></div>
+            </div>
+
+            <!-- Step 1: Basic Info -->
+            <div id="step-1" class="form-section">
+                <h3 class="form-section-title">
+                    <i class="fa-solid fa-user"></i>
+                    Personal Information
+                </h3>
+
+                <div class="form-group">
+                    <label class="form-label">Full Name (as in ID)</label>
+                    <input type="text" class="form-input" placeholder="Enter your full name">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email Address (Optional)</label>
+                    <input type="email" class="form-input" placeholder="your.email@example.com">
+                </div>
+
+                <h3 class="form-section-title mt-lg">
+                    <i class="fa-solid fa-globe"></i>
+                    Preferred Language
+                </h3>
+
+                <div class="language-option selected" data-lang="en">
+                    <span class="language-flag">🇬🇧</span>
+                    <div class="language-info">
+                        <div class="language-name">English</div>
+                        <div class="language-native">English</div>
+                    </div>
+                    <div class="check-icon">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                </div>
+
+                <div class="language-option" data-lang="ar">
+                    <span class="language-flag">🇸🇦</span>
+                    <div class="language-info">
+                        <div class="language-name">Arabic</div>
+                        <div class="language-native">العربية</div>
+                    </div>
+                    <div class="check-icon">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                </div>
+
+                <div class="language-option" data-lang="id">
+                    <span class="language-flag">🇮🇩</span>
+                    <div class="language-info">
+                        <div class="language-name">Indonesian</div>
+                        <div class="language-native">Bahasa Indonesia</div>
+                    </div>
+                    <div class="check-icon">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: ID Verification -->
+            <div id="step-2" class="form-section hidden">
+                <h3 class="form-section-title">
+                    <i class="fa-solid fa-id-card"></i>
+                    Identity Verification
+                </h3>
+
+                <p class="text-secondary mb-md">Select your ID type and upload a clear photo</p>
+
+                <div class="id-type-selector">
+                    <div class="id-type-option selected" data-type="passport">
+                        <i class="fa-solid fa-passport"></i>
+                        <div class="id-type-label">Passport</div>
+                    </div>
+                    <div class="id-type-option" data-type="iqama">
+                        <i class="fa-solid fa-id-card"></i>
+                        <div class="id-type-label">Iqama</div>
+                    </div>
+                    <div class="id-type-option" data-type="national">
+                        <i class="fa-solid fa-address-card"></i>
+                        <div class="id-type-label">National ID</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">ID Number</label>
+                    <input type="text" class="form-input" placeholder="Enter your ID number">
+                </div>
+
+                <div class="id-upload-box" id="upload-box">
+                    <i class="fa-solid fa-cloud-arrow-up id-upload-icon"></i>
+                    <p class="id-upload-text">Tap to upload ID photo</p>
+                    <p class="id-upload-hint">JPG, PNG or PDF • Max 5MB</p>
+                </div>
+
+                <input type="file" id="file-input" accept="image/*,.pdf" style="display: none;">
+            </div>
+
+            <!-- Step 3: Review -->
+            <div id="step-3" class="form-section hidden">
+                <h3 class="form-section-title">
+                    <i class="fa-solid fa-check-circle"></i>
+                    Almost Done!
+                </h3>
+
+                <div class="card mb-md">
+                    <div class="flex items-center gap-md mb-md">
+                        <div class="avatar avatar-lg">AH</div>
+                        <div>
+                            <h4>Ahmad Hassan</h4>
+                            <p class="text-secondary">+966 5XX XXX XXXX</p>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div class="booking-row">
+                        <span class="booking-label">Email</span>
+                        <span class="booking-value">ahmad@example.com</span>
+                    </div>
+                    <div class="booking-row">
+                        <span class="booking-label">Language</span>
+                        <span class="booking-value">English</span>
+                    </div>
+                    <div class="booking-row">
+                        <span class="booking-label">ID Type</span>
+                        <span class="booking-value">Passport</span>
+                    </div>
+                    <div class="booking-row">
+                        <span class="booking-label">ID Status</span>
+                        <span class="status-badge status-available">
+                            <i class="fa-solid fa-check"></i> Uploaded
+                        </span>
+                    </div>
+                </div>
+
+                <div class="card card-glass">
+                    <div class="flex items-center gap-md">
+                        <i class="fa-solid fa-shield-check text-gold" style="font-size: 2rem;"></i>
+                        <div>
+                            <h4>Verification in Progress</h4>
+                            <p class="text-secondary" style="font-size: 0.875rem;">Your documents will be verified
+                                within 24 hours</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn btn-secondary skip-btn" id="skip-btn">Skip</button>
+                <button class="btn btn-primary continue-btn" id="continue-btn">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 3;
+
+        const stepDots = document.querySelectorAll('.step-dot');
+        const steps = [
+            document.getElementById('step-1'),
+            document.getElementById('step-2'),
+            document.getElementById('step-3')
+        ];
+        const continueBtn = document.getElementById('continue-btn');
+        const skipBtn = document.getElementById('skip-btn');
+
+        function updateSteps() {
+            stepDots.forEach((dot, index) => {
+                dot.classList.remove('active', 'completed');
+                if (index + 1 === currentStep) {
+                    dot.classList.add('active');
+                } else if (index + 1 < currentStep) {
+                    dot.classList.add('completed');
+                }
+            });
+
+            steps.forEach((step, index) => {
+                if (index + 1 === currentStep) {
+                    step.classList.remove('hidden');
+                } else {
+                    step.classList.add('hidden');
+                }
+            });
+
+            if (currentStep === totalSteps) {
+                continueBtn.innerHTML = '<i class="fa-solid fa-check"></i> Get Started';
+                skipBtn.classList.add('hidden');
+            }
+        }
+
+        continueBtn.addEventListener('click', () => {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateSteps();
+            } else {
+                window.location.href = 'home.html';
+            }
+        });
+
+        skipBtn.addEventListener('click', () => {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateSteps();
+            }
+        });
+
+        // Language selection
+        document.querySelectorAll('.language-option').forEach(option => {
+            option.addEventListener('click', () => {
+                document.querySelectorAll('.language-option').forEach(o => o.classList.remove('selected'));
+                option.classList.add('selected');
+            });
+        });
+
+        // ID type selection
+        document.querySelectorAll('.id-type-option').forEach(option => {
+            option.addEventListener('click', () => {
+                document.querySelectorAll('.id-type-option').forEach(o => o.classList.remove('selected'));
+                option.classList.add('selected');
+            });
+        });
+
+        // File upload
+        const uploadBox = document.getElementById('upload-box');
+        const fileInput = document.getElementById('file-input');
+
+        uploadBox.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                uploadBox.innerHTML = `
+          <i class="fa-solid fa-file-check id-upload-icon" style="color: var(--success);"></i>
+          <p class="id-upload-text">${e.target.files[0].name}</p>
+          <p class="id-upload-hint" style="color: var(--success);">File uploaded successfully</p>
+        `;
+            }
+        });
+    </script>
+</body>
+
+</html>

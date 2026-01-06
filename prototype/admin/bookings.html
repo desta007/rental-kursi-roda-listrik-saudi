@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookings - MobilityKSA Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <style>
+        .booking-detail-row {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .customer-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .booking-dates {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .date-range {
+            font-size: 0.875rem;
+        }
+
+        .duration {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Detail Drawer */
+        .drawer-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 999;
+        }
+
+        .drawer-overlay.active {
+            display: block;
+        }
+
+        .drawer {
+            position: fixed;
+            top: 0;
+            right: -500px;
+            width: 500px;
+            height: 100vh;
+            background: var(--bg-secondary);
+            border-left: 1px solid var(--border);
+            z-index: 1000;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .drawer.active {
+            right: 0;
+        }
+
+        .drawer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .drawer-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .drawer-close {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-input);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .drawer-body {
+            flex: 1;
+            padding: var(--spacing-lg);
+            overflow-y: auto;
+        }
+
+        .drawer-footer {
+            padding: var(--spacing-lg);
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .detail-section {
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .detail-section-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .detail-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-md);
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--spacing-sm) 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: var(--text-muted);
+        }
+
+        .detail-value {
+            font-weight: 500;
+            text-align: right;
+        }
+
+        .customer-card {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+        }
+
+        .customer-card-info {
+            flex: 1;
+        }
+
+        .customer-card-name {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .customer-card-phone {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: var(--spacing-lg);
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: var(--spacing-md);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -17px;
+            top: 4px;
+            width: 12px;
+            height: 12px;
+            background: var(--primary);
+            border-radius: 50%;
+            border: 2px solid var(--bg-secondary);
+        }
+
+        .timeline-item.pending::before {
+            background: var(--border);
+        }
+
+        .timeline-time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+
+        .timeline-text {
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fa-solid fa-wheelchair"></i>
+                </div>
+                <div class="sidebar-brand">Mobility<span>KSA</span></div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main Menu</div>
+                    <a href="dashboard.html" class="nav-item">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        Dashboard
+                    </a>
+                    <a href="bookings.html" class="nav-item active">
+                        <i class="fa-solid fa-calendar-check"></i>
+                        Bookings
+                        <span class="nav-item-badge">12</span>
+                    </a>
+                    <a href="wheelchairs.html" class="nav-item">
+                        <i class="fa-solid fa-wheelchair"></i>
+                        Wheelchairs
+                    </a>
+                    <a href="users.html" class="nav-item">
+                        <i class="fa-solid fa-users"></i>
+                        Customers
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Management</div>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-location-dot"></i>
+                        Stations
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-credit-card"></i>
+                        Payments
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-ticket"></i>
+                        Promo Codes
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Reports</div>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-chart-line"></i>
+                        Analytics
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-file-invoice"></i>
+                        Finance
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">System</div>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-cog"></i>
+                        Settings
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-user-shield"></i>
+                        Admins
+                    </a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sidebar-user">
+                    <div class="user-avatar">AD</div>
+                    <div class="user-info">
+                        <div class="user-name">Admin User</div>
+                        <div class="user-role">Super Admin</div>
+                    </div>
+                    <i class="fa-solid fa-ellipsis-vertical" style="color: var(--text-muted);"></i>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="main-header">
+                <div class="header-left">
+                    <h1 class="page-title">Bookings</h1>
+                    <div class="breadcrumb">
+                        <a href="dashboard.html">Dashboard</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size: 0.75rem;"></i>
+                        <span>Bookings</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="btn btn-secondary">
+                        <i class="fa-solid fa-download"></i>
+                        Export
+                    </button>
+                    <button class="btn btn-primary">
+                        <i class="fa-solid fa-plus"></i>
+                        New Booking
+                    </button>
+                </div>
+            </header>
+
+            <div class="page-content">
+                <!-- Stats -->
+                <div class="stats-grid" style="grid-template-columns: repeat(5, 1fr);">
+                    <div class="stat-card">
+                        <div class="stat-icon primary">
+                            <i class="fa-solid fa-calendar"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-label">Total</div>
+                            <div class="stat-value">1,247</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon warning">
+                            <i class="fa-solid fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-label">Pending</div>
+                            <div class="stat-value">12</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon success">
+                            <i class="fa-solid fa-play"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-label">Active</div>
+                            <div class="stat-value">89</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon info">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-label">Completed</div>
+                            <div class="stat-value">1,102</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(239, 68, 68, 0.2); color: var(--error);">
+                            <i class="fa-solid fa-ban"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-label">Cancelled</div>
+                            <div class="stat-value">44</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bookings Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="flex items-center gap-md">
+                            <div class="header-search" style="width: 300px;">
+                                <i class="fa-solid fa-search" style="color: var(--text-muted);"></i>
+                                <input type="text" placeholder="Search booking code or customer...">
+                            </div>
+                            <select class="form-input form-select" style="width: auto;">
+                                <option value="">All Status</option>
+                                <option>Pending</option>
+                                <option>Confirmed</option>
+                                <option>Active</option>
+                                <option>Completed</option>
+                                <option>Cancelled</option>
+                            </select>
+                            <input type="date" class="form-input" style="width: auto;">
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Booking Code</th>
+                                    <th>Customer</th>
+                                    <th>Wheelchair</th>
+                                    <th>Dates</th>
+                                    <th>Pickup</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr onclick="openDrawer()" style="cursor: pointer;">
+                                    <td>
+                                        <span style="font-weight: 600;">MK-2026-7842</span>
+                                    </td>
+                                    <td>
+                                        <div class="customer-info">
+                                            <div class="avatar avatar-sm">AH</div>
+                                            <div>
+                                                <div>Ahmad Hassan</div>
+                                                <div class="text-muted" style="font-size: 0.75rem;">+966 512 xxx xxx
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>Premium Electric</td>
+                                    <td>
+                                        <div class="booking-dates">
+                                            <span class="date-range">Jan 1 - Jan 7, 2026</span>
+                                            <span class="duration">7 days</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="booking-detail-row">
+                                            <i class="fa-solid fa-location-dot text-muted"></i>
+                                            <span>Masjid Al-Haram</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span style="font-weight: 600;">SAR 1,052</span>
+                                    </td>
+                                    <td><span class="badge badge-success">Active</span></td>
+                                    <td>
+                                        <div class="flex gap-sm">
+                                            <button class="btn btn-secondary btn-icon btn-sm" title="View">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-secondary btn-icon btn-sm" title="Edit">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="cursor: pointer;">
+                                    <td>
+                                        <span style="font-weight: 600;">MK-2026-7841</span>
+                                    </td>
+                                    <td>
+                                        <div class="customer-info">
+                                            <div class="avatar avatar-sm">FM</div>
+                                            <div>
+                                                <div>Fatima Mohammed</div>
+                                                <div class="text-muted" style="font-size: 0.75rem;">+966 501 xxx xxx
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>Standard Electric</td>
+                                    <td>
+                                        <div class="booking-dates">
+                                            <span class="date-range">Jan 5 - Jan 10, 2026</span>
+                                            <span class="duration">5 days</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="booking-detail-row">
+                                            <i class="fa-solid fa-truck text-muted"></i>
+                                            <span>Delivery</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span style="font-weight: 600;">SAR 750</span>
+                                    </td>
+                                    <td><span class="badge badge-warning">Pending</span></td>
+                                    <td>
+                                        <div class="flex gap-sm">
+                                            <button class="btn btn-success btn-sm" title="Confirm">
+                                                <i class="fa-solid fa-check"></i>
+                                            </button>
+                                            <button class="btn btn-secondary btn-icon btn-sm" title="View">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="cursor: pointer;">
+                                    <td>
+                                        <span style="font-weight: 600;">MK-2026-7840</span>
+                                    </td>
+                                    <td>
+                                        <div class="customer-info">
+                                            <div class="avatar avatar-sm">JS</div>
+                                            <div>
+                                                <div>John Smith</div>
+                                                <div class="text-muted" style="font-size: 0.75rem;">+1 555 xxx xxx</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>Heavy Duty</td>
+                                    <td>
+                                        <div class="booking-dates">
+                                            <span class="date-range">Dec 25 - Dec 30, 2025</span>
+                                            <span class="duration">5 days</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="booking-detail-row">
+                                            <i class="fa-solid fa-location-dot text-muted"></i>
+                                            <span>Hilton Makkah</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span style="font-weight: 600;">SAR 1,500</span>
+                                    </td>
+                                    <td><span class="badge badge-info">Completed</span></td>
+                                    <td>
+                                        <div class="flex gap-sm">
+                                            <button class="btn btn-secondary btn-icon btn-sm" title="View">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-secondary btn-icon btn-sm" title="Invoice">
+                                                <i class="fa-solid fa-file-invoice"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="cursor: pointer;">
+                                    <td>
+                                        <span style="font-weight: 600;">MK-2026-7839</span>
+                                    </td>
+                                    <td>
+                                        <div class="customer-info">
+                                            <div class="avatar avatar-sm">SA</div>
+                                            <div>
+                                                <div>Sarah Al-Rashid</div>
+                                                <div class="text-muted" style="font-size: 0.75rem;">+966 555 xxx xxx
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>Premium Electric</td>
+                                    <td>
+                                        <div class="booking-dates">
+                                            <span class="date-range">Jan 2 - Jan 9, 2026</span>
+                                            <span class="duration">7 days</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="booking-detail-row">
+                                            <i class="fa-solid fa-location-dot text-muted"></i>
+                                            <span>Masjid Al-Haram</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span style="font-weight: 600;">SAR 980</span>
+                                    </td>
+                                    <td><span class="badge badge-success">Active</span></td>
+                                    <td>
+                                        <div class="flex gap-sm">
+                                            <button class="btn btn-secondary btn-icon btn-sm" title="View">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-secondary btn-icon btn-sm" title="Edit">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="cursor: pointer;">
+                                    <td>
+                                        <span style="font-weight: 600;">MK-2026-7838</span>
+                                    </td>
+                                    <td>
+                                        <div class="customer-info">
+                                            <div class="avatar avatar-sm">MK</div>
+                                            <div>
+                                                <div>Mohammed Khan</div>
+                                                <div class="text-muted" style="font-size: 0.75rem;">+92 300 xxx xxx
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>Standard Electric</td>
+                                    <td>
+                                        <div class="booking-dates">
+                                            <span class="date-range">Dec 20 - Dec 25, 2025</span>
+                                            <span class="duration">5 days</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="booking-detail-row">
+                                            <i class="fa-solid fa-truck text-muted"></i>
+                                            <span>Delivery</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span
+                                            style="font-weight: 600; text-decoration: line-through; color: var(--text-muted);">SAR
+                                            600</span>
+                                    </td>
+                                    <td><span class="badge badge-danger">Cancelled</span></td>
+                                    <td>
+                                        <div class="flex gap-sm">
+                                            <button class="btn btn-secondary btn-icon btn-sm" title="View">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="pagination">
+                        <div class="pagination-info">
+                            Showing 1-5 of 1,247 bookings
+                        </div>
+                        <div class="pagination-buttons">
+                            <button class="page-btn"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button class="page-btn active">1</button>
+                            <button class="page-btn">2</button>
+                            <button class="page-btn">3</button>
+                            <button class="page-btn">...</button>
+                            <button class="page-btn">250</button>
+                            <button class="page-btn"><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Detail Drawer -->
+    <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+    <div class="drawer" id="drawer">
+        <div class="drawer-header">
+            <div>
+                <h2 class="drawer-title">MK-2026-7842</h2>
+                <span class="badge badge-success">Active</span>
+            </div>
+            <div class="drawer-close" onclick="closeDrawer()">
+                <i class="fa-solid fa-times"></i>
+            </div>
+        </div>
+
+        <div class="drawer-body">
+            <!-- Customer -->
+            <div class="detail-section">
+                <h3 class="detail-section-title">Customer</h3>
+                <div class="customer-card">
+                    <div class="avatar avatar-lg">AH</div>
+                    <div class="customer-card-info">
+                        <div class="customer-card-name">Ahmad Hassan</div>
+                        <div class="customer-card-phone">+966 512 345 678</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">ahmad.hassan@email.com</div>
+                    </div>
+                    <button class="btn btn-secondary btn-sm">
+                        <i class="fa-solid fa-message"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Wheelchair -->
+            <div class="detail-section">
+                <h3 class="detail-section-title">Wheelchair</h3>
+                <div class="detail-card">
+                    <div class="flex items-center gap-md mb-md">
+                        <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=100&h=100&fit=crop"
+                            style="width: 60px; height: 60px; border-radius: var(--radius-md); object-fit: cover;">
+                        <div>
+                            <div style="font-weight: 600;">Premium Electric Wheelchair</div>
+                            <div class="text-muted" style="font-size: 0.875rem;">WC-001 • MK-PRO 2025</div>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Type</span>
+                        <span class="detail-value">Premium Electric</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Station</span>
+                        <span class="detail-value">Masjid Al-Haram</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Booking Details -->
+            <div class="detail-section">
+                <h3 class="detail-section-title">Booking Details</h3>
+                <div class="detail-card">
+                    <div class="detail-row">
+                        <span class="detail-label">Start Date</span>
+                        <span class="detail-value">Jan 1, 2026</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">End Date</span>
+                        <span class="detail-value">Jan 7, 2026</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Duration</span>
+                        <span class="detail-value">7 days</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Pickup Type</span>
+                        <span class="detail-value">Self Pickup</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Pickup Station</span>
+                        <span class="detail-value">Masjid Al-Haram, Gate 79</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment -->
+            <div class="detail-section">
+                <h3 class="detail-section-title">Payment</h3>
+                <div class="detail-card">
+                    <div class="detail-row">
+                        <span class="detail-label">Rental (7 × SAR 100)</span>
+                        <span class="detail-value">SAR 700</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Discount</span>
+                        <span class="detail-value text-success">- SAR 100</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">VAT (15%)</span>
+                        <span class="detail-value">SAR 90</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Deposit (Refundable)</span>
+                        <span class="detail-value">SAR 500</span>
+                    </div>
+                    <div class="detail-row"
+                        style="border-top: 1px solid var(--border); padding-top: var(--spacing-md);">
+                        <span class="detail-label" style="font-weight: 600; color: var(--text-primary);">Total
+                            Paid</span>
+                        <span class="detail-value" style="font-size: 1.25rem; color: var(--secondary);">SAR 1,052</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Payment Method</span>
+                        <span class="detail-value">Visa •••• 4532</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Payment Status</span>
+                        <span class="badge badge-success">Paid</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline -->
+            <div class="detail-section">
+                <h3 class="detail-section-title">Activity Timeline</h3>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-time">Jan 1, 2026 • 10:30 AM</div>
+                        <div class="timeline-text">Wheelchair picked up by customer</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">Jan 1, 2026 • 09:00 AM</div>
+                        <div class="timeline-text">Payment confirmed</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">Dec 30, 2025 • 03:45 PM</div>
+                        <div class="timeline-text">Booking confirmed</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">Dec 30, 2025 • 03:30 PM</div>
+                        <div class="timeline-text">Booking created</div>
+                    </div>
+                    <div class="timeline-item pending">
+                        <div class="timeline-time">Expected: Jan 7, 2026</div>
+                        <div class="timeline-text" style="color: var(--text-muted);">Wheelchair return</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="drawer-footer">
+            <button class="btn btn-secondary" style="flex: 1;">
+                <i class="fa-solid fa-print"></i>
+                Print
+            </button>
+            <button class="btn btn-secondary" style="flex: 1;">
+                <i class="fa-solid fa-pen"></i>
+                Edit
+            </button>
+            <button class="btn btn-danger" style="flex: 1;">
+                <i class="fa-solid fa-ban"></i>
+                Cancel
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function openDrawer() {
+            document.getElementById('drawer-overlay').classList.add('active');
+            document.getElementById('drawer').classList.add('active');
+        }
+
+        function closeDrawer() {
+            document.getElementById('drawer-overlay').classList.remove('active');
+            document.getElementById('drawer').classList.remove('active');
+        }
+    </script>
+</body>
+
+</html>

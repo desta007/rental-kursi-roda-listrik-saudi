@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Home - MobilityKSA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .home-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md);
+        }
+
+        .user-greeting {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .greeting-text {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 1.125rem;
+        }
+
+        .notification-btn {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-input);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 18px;
+            height: 18px;
+            background: var(--error);
+            border-radius: 50%;
+            font-size: 0.625rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+
+        .promo-banner {
+            background: linear-gradient(135deg, #1B4D3E 0%, #D4AF37 100%);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-lg);
+            margin: var(--spacing-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .promo-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -30%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .promo-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .promo-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .promo-text {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .promo-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: white;
+            color: var(--primary);
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-decoration: none;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--spacing-md);
+            padding: 0 var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .quick-action {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-md);
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            text-decoration: none;
+        }
+
+        .quick-action:hover {
+            border-color: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .quick-action-icon {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-md);
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .quick-action-label {
+            font-size: 0.75rem;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        .station-card {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            cursor: pointer;
+        }
+
+        .station-icon {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-input);
+            border-radius: var(--radius-md);
+            color: var(--primary-light);
+            font-size: 1.25rem;
+        }
+
+        .station-info {
+            flex: 1;
+        }
+
+        .station-name {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .station-address {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .station-available {
+            text-align: right;
+        }
+
+        .available-count {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-light);
+        }
+
+        .available-label {
+            font-size: 0.625rem;
+            color: var(--text-muted);
+        }
+
+        .stations-scroll {
+            display: flex;
+            gap: var(--spacing-md);
+            overflow-x: auto;
+            padding: 0 var(--spacing-md);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .stations-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .station-card-scroll {
+            min-width: 280px;
+        }
+
+        .active-booking {
+            margin: 0 var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+            background: linear-gradient(135deg, rgba(27, 77, 62, 0.3) 0%, rgba(212, 175, 55, 0.1) 100%);
+            border: 1px solid var(--primary);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-md);
+        }
+
+        .active-booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .active-badge {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: 4px 12px;
+            background: var(--success);
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .active-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .booking-time-left {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .active-booking-content {
+            display: flex;
+            gap: var(--spacing-md);
+        }
+
+        .active-wheelchair-image {
+            width: 80px;
+            height: 80px;
+            background: var(--bg-input);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+
+        .active-wheelchair-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .active-booking-info {
+            flex: 1;
+        }
+
+        .active-wheelchair-name {
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .active-booking-dates {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .active-booking-stats {
+            display: flex;
+            gap: var(--spacing-lg);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .stat-item i {
+            color: var(--primary-light);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="mobile-container">
+        <div class="screen">
+            <!-- Header -->
+            <div class="home-header">
+                <div class="user-greeting">
+                    <div class="avatar">AH</div>
+                    <div>
+                        <p class="greeting-text">Good morning,</p>
+                        <h3 class="user-name">Ahmad Hassan</h3>
+                    </div>
+                </div>
+                <div class="notification-btn">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </div>
+            </div>
+
+            <div class="screen-content" style="padding-top: 0;">
+                <!-- Location Selector -->
+                <div style="padding: 0 var(--spacing-md); margin-bottom: var(--spacing-md);">
+                    <div class="location-selector">
+                        <i class="fa-solid fa-location-dot location-icon"></i>
+                        <span class="location-text">Mecca, Saudi Arabia</span>
+                        <i class="fa-solid fa-chevron-down" style="color: var(--text-muted);"></i>
+                    </div>
+                </div>
+
+                <!-- Promo Banner -->
+                <div class="promo-banner">
+                    <span class="promo-tag">🎉 Special Offer</span>
+                    <h3 class="promo-title">Hajj Season Discount</h3>
+                    <p class="promo-text">Get 20% off on weekly rentals during Hajj season</p>
+                    <a href="wheelchairs.html" class="promo-btn">
+                        Book Now <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <!-- Active Booking (if any) -->
+                <div class="active-booking">
+                    <div class="active-booking-header">
+                        <span class="active-badge">Active Rental</span>
+                        <span class="booking-time-left">3 days left</span>
+                    </div>
+                    <div class="active-booking-content">
+                        <div class="active-wheelchair-image">
+                            <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=200&h=200&fit=crop"
+                                alt="Wheelchair">
+                        </div>
+                        <div class="active-booking-info">
+                            <h4 class="active-wheelchair-name">Premium Electric Wheelchair</h4>
+                            <p class="active-booking-dates">
+                                <i class="fa-regular fa-calendar"></i> Jan 1 - Jan 7, 2026
+                            </p>
+                            <div class="active-booking-stats">
+                                <div class="stat-item">
+                                    <i class="fa-solid fa-battery-three-quarters"></i>
+                                    <span>78%</span>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="fa-solid fa-road"></i>
+                                    <span>15 km range</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="section-header" style="padding: 0 var(--spacing-md);">
+                    <h3 class="section-title">Quick Actions</h3>
+                </div>
+                <div class="quick-actions">
+                    <a href="wheelchairs.html" class="quick-action">
+                        <div class="quick-action-icon">
+                            <i class="fa-solid fa-wheelchair"></i>
+                        </div>
+                        <span class="quick-action-label">Browse</span>
+                    </a>
+                    <a href="bookings.html" class="quick-action">
+                        <div class="quick-action-icon"
+                            style="background: linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%);">
+                            <i class="fa-solid fa-receipt"></i>
+                        </div>
+                        <span class="quick-action-label">My Bookings</span>
+                    </a>
+                    <a href="#" class="quick-action">
+                        <div class="quick-action-icon"
+                            style="background: linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%);">
+                            <i class="fa-solid fa-headset"></i>
+                        </div>
+                        <span class="quick-action-label">Support</span>
+                    </a>
+                    <a href="#" class="quick-action">
+                        <div class="quick-action-icon"
+                            style="background: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);">
+                            <i class="fa-solid fa-question-circle"></i>
+                        </div>
+                        <span class="quick-action-label">Help</span>
+                    </a>
+                </div>
+
+                <!-- Search Bar -->
+                <div style="padding: 0 var(--spacing-md); margin-bottom: var(--spacing-lg);">
+                    <div class="search-bar" onclick="window.location.href='wheelchairs.html'">
+                        <i class="fa-solid fa-search search-icon"></i>
+                        <input type="text" placeholder="Search wheelchairs...">
+                        <i class="fa-solid fa-sliders" style="color: var(--primary-light);"></i>
+                    </div>
+                </div>
+
+                <!-- Nearby Stations -->
+                <div class="section-header" style="padding: 0 var(--spacing-md);">
+                    <h3 class="section-title">Nearby Pickup Stations</h3>
+                    <a href="#" class="section-link">View All</a>
+                </div>
+
+                <div class="stations-scroll mb-lg">
+                    <div class="station-card station-card-scroll">
+                        <div class="station-icon">
+                            <i class="fa-solid fa-mosque"></i>
+                        </div>
+                        <div class="station-info">
+                            <h4 class="station-name">Masjid Al-Haram</h4>
+                            <p class="station-address">Gate 79, Mecca</p>
+                        </div>
+                        <div class="station-available">
+                            <div class="available-count">12</div>
+                            <div class="available-label">Available</div>
+                        </div>
+                    </div>
+
+                    <div class="station-card station-card-scroll">
+                        <div class="station-icon">
+                            <i class="fa-solid fa-hotel"></i>
+                        </div>
+                        <div class="station-info">
+                            <h4 class="station-name">Hilton Makkah</h4>
+                            <p class="station-address">Ibrahim Al Khalil Rd</p>
+                        </div>
+                        <div class="station-available">
+                            <div class="available-count">8</div>
+                            <div class="available-label">Available</div>
+                        </div>
+                    </div>
+
+                    <div class="station-card station-card-scroll">
+                        <div class="station-icon">
+                            <i class="fa-solid fa-hospital"></i>
+                        </div>
+                        <div class="station-info">
+                            <h4 class="station-name">King Faisal Hospital</h4>
+                            <p class="station-address">Al Aziziyah, Mecca</p>
+                        </div>
+                        <div class="station-available">
+                            <div class="available-count">5</div>
+                            <div class="available-label">Available</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Featured Wheelchairs -->
+                <div class="section-header" style="padding: 0 var(--spacing-md);">
+                    <h3 class="section-title">Featured Wheelchairs</h3>
+                    <a href="wheelchairs.html" class="section-link">See All</a>
+                </div>
+
+                <div style="padding: 0 var(--spacing-md);">
+                    <div class="wheelchair-card" onclick="window.location.href='wheelchair-detail.html'">
+                        <div class="wheelchair-image">
+                            <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=200&h=200&fit=crop"
+                                alt="Wheelchair">
+                        </div>
+                        <div class="wheelchair-info">
+                            <h4 class="wheelchair-name">Standard Electric Wheelchair</h4>
+                            <div class="wheelchair-specs">
+                                <span class="spec-badge"><i class="fa-solid fa-battery-full"></i> 20km</span>
+                                <span class="spec-badge"><i class="fa-solid fa-weight-hanging"></i> 100kg</span>
+                            </div>
+                            <div class="wheelchair-price">
+                                <span class="price-amount">SAR 50</span>
+                                <span class="price-unit">/ day</span>
+                            </div>
+                        </div>
+                        <span class="status-badge status-available">Available</span>
+                    </div>
+
+                    <div class="wheelchair-card" onclick="window.location.href='wheelchair-detail.html'">
+                        <div class="wheelchair-image">
+                            <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=200&h=200&fit=crop"
+                                alt="Wheelchair">
+                        </div>
+                        <div class="wheelchair-info">
+                            <h4 class="wheelchair-name">Premium Electric Wheelchair</h4>
+                            <div class="wheelchair-specs">
+                                <span class="spec-badge"><i class="fa-solid fa-battery-full"></i> 30km</span>
+                                <span class="spec-badge"><i class="fa-solid fa-weight-hanging"></i> 150kg</span>
+                                <span class="spec-badge"><i class="fa-solid fa-star"></i> Premium</span>
+                            </div>
+                            <div class="wheelchair-price">
+                                <span class="price-amount">SAR 100</span>
+                                <span class="price-unit">/ day</span>
+                            </div>
+                        </div>
+                        <span class="status-badge status-available">Available</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Navigation -->
+            <nav class="bottom-nav">
+                <a href="home.html" class="nav-item active">
+                    <i class="fa-solid fa-home nav-icon"></i>
+                    <span class="nav-label">Home</span>
+                </a>
+                <a href="wheelchairs.html" class="nav-item">
+                    <i class="fa-solid fa-wheelchair nav-icon"></i>
+                    <span class="nav-label">Browse</span>
+                </a>
+                <a href="bookings.html" class="nav-item">
+                    <i class="fa-solid fa-receipt nav-icon"></i>
+                    <span class="nav-label">Bookings</span>
+                </a>
+                <a href="profile.html" class="nav-item">
+                    <i class="fa-solid fa-user nav-icon"></i>
+                    <span class="nav-label">Profile</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+</body>
+
+</html>

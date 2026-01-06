@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customers - MobilityKSA Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fa-solid fa-wheelchair"></i>
+                </div>
+                <div class="sidebar-brand">Mobility<span>KSA</span></div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main Menu</div>
+                    <a href="dashboard.html" class="nav-item">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        Dashboard
+                    </a>
+                    <a href="bookings.html" class="nav-item">
+                        <i class="fa-solid fa-calendar-check"></i>
+                        Bookings
+                        <span class="nav-item-badge">12</span>
+                    </a>
+                    <a href="wheelchairs.html" class="nav-item">
+                        <i class="fa-solid fa-wheelchair"></i>
+                        Wheelchairs
+                    </a>
+                    <a href="users.html" class="nav-item active">
+                        <i class="fa-solid fa-users"></i>
+                        Customers
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Management</div>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-location-dot"></i>
+                        Stations
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-credit-card"></i>
+                        Payments
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-ticket"></i>
+                        Promo Codes
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Reports</div>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-chart-line"></i>
+                        Analytics
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-file-invoice"></i>
+                        Finance
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">System</div>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-cog"></i>
+                        Settings
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-user-shield"></i>
+                        Admins
+                    </a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sidebar-user">
+                    <div class="user-avatar">AD</div>
+                    <div class="user-info">
+                        <div class="user-name">Admin User</div>
+                        <div class="user-role">Super Admin</div>
+                    </div>
+                    <i class="fa-solid fa-ellipsis-vertical" style="color: var(--text-muted);"></i>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="main-header">
+                <div class="header-left">
+                    <h1 class="page-title">Customers</h1>
+                    <div class="breadcrumb">
+                        <a href="dashboard.html">Dashboard</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size: 0.75rem;"></i>
+                        <span>Customers</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="btn btn-secondary">
+                        <i class="fa-solid fa-download"></i>
+                        Export
+                    </button>
+                </div>
+            </header>
+
+            <div class="page-content">
+                <!-- Stats -->
+                <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr);">
+                    <div class="stat-card">
+                        <div class="stat-icon primary">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-label">Total Customers</div>
+                            <div class="stat-value">3,842</div>
+                            <div class="stat-change positive">
+                                <i class="fa-solid fa-arrow-up"></i>
+                                24 new today
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon success">
+                            <i class="fa-solid fa-user-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-label">Verified</div>
+                            <div class="stat-value">3,215</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon warning">
+                            <i class="fa-solid fa-user-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-label">Pending Verification</div>
+                            <div class="stat-value">127</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon info">
+                            <i class="fa-solid fa-user-tag"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-label">Active Renters</div>
+                            <div class="stat-value">89</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="flex items-center gap-md">
+                            <div class="header-search" style="width: 300px;">
+                                <i class="fa-solid fa-search" style="color: var(--text-muted);"></i>
+                                <input type="text" placeholder="Search by name, phone, or email...">
+                            </div>
+                            <select class="form-input form-select" style="width: auto;">
+                                <option value="">All Status</option>
+                                <option>Active</option>
+                                <option>Pending</option>
+                                <option>Suspended</option>
+                            </select>
+                            <select class="form-input form-select" style="width: auto;">
+                                <option value="">All Verification</option>
+                                <option>Verified</option>
+                                <option>Pending</option>
+                                <option>Rejected</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Customer</th>
+                                    <th>Phone</th>
+                                    <th>ID Verification</th>
+                                    <th>Total Bookings</th>
+                                    <th>Total Spent</th>
+                                    <th>Status</th>
+                                    <th>Joined</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="flex items-center gap-md">
+                                            <div class="avatar avatar-sm">AH</div>
+                                            <div>
+                                                <div style="font-weight: 500;">Ahmad Hassan</div>
+                                                <div class="text-muted" style="font-size: 0.75rem;">ahmad@email.com
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>+966 512 345 678</td>
+                                    <td>
+                                        <span class="badge badge-success">
+                                            <i class="fa-solid fa-check"></i>
+                                            Verified
+                                        </span>
+                                    </td>
+                                    <td>5</td>
+                                    <td>SAR 4,280</td>
+                                    <td><span class="badge badge-success">Active</span></td>
+                                    <td>Nov 15, 2025</td>
+                                    <td>
+                                        <div class="flex gap-sm">
+                                            <button class="btn btn-secondary btn-icon btn-sm" title="View">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-secondary btn-icon btn-sm" title="Edit">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="flex items-center gap-md">
+                                            <div class="avatar avatar-sm">FM</div>
+                                            <div>
+                                                <div style="font-weight: 500;">Fatima Mohammed</div>
+                                                <div class="text-muted" style="font-size: 0.75rem;">fatima.m@email.com
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>+966 501 234 567</td>
+                                    <td>
+                                        <span class="badge badge-warning">
+                                            <i class="fa-solid fa-clock"></i>
+                                            Pending
+                                        </span>
+                                    </td>
+                                    <td>1</td>
+                                    <td>SAR 750</td>
+                                    <td><span class="badge badge-success">Active</span></td>
+                                    <td>Dec 28, 2025</td>
+                                    <td>
+                                        <div class="flex gap-sm">
+                                            <button class="btn btn-success btn-sm" title="Review">
+                                                <i class="fa-solid fa-check"></i>
+                                                Review
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="flex items-center gap-md">
+                                            <div class="avatar avatar-sm">JS</div>
+                                            <div>
+                                                <div style="font-weight: 500;">John Smith</div>
+                                                <div class="text-muted" style="font-size: 0.75rem;">john.smith@mail.com
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>+1 555 123 4567</td>
+                                    <td>
+                                        <span class="badge badge-success">
+                                            <i class="fa-solid fa-check"></i>
+                                            Verified
+                                        </span>
+                                    </td>
+                                    <td>3</td>
+                                    <td>SAR 2,850</td>
+                                    <td><span class="badge badge-success">Active</span></td>
+                                    <td>Oct 5, 2025</td>
+                                    <td>
+                                        <div class="flex gap-sm">
+                                            <button class="btn btn-secondary btn-icon btn-sm" title="View">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-secondary btn-icon btn-sm" title="Edit">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="flex items-center gap-md">
+                                            <div class="avatar avatar-sm">SA</div>
+                                            <div>
+                                                <div style="font-weight: 500;">Sarah Al-Rashid</div>
+                                                <div class="text-muted" style="font-size: 0.75rem;">sarah.r@email.com
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>+966 555 987 654</td>
+                                    <td>
+                                        <span class="badge badge-success">
+                                            <i class="fa-solid fa-check"></i>
+                                            Verified
+                                        </span>
+                                    </td>
+                                    <td>8</td>
+                                    <td>SAR 6,520</td>
+                                    <td><span class="badge badge-success">Active</span></td>
+                                    <td>Sep 20, 2025</td>
+                                    <td>
+                                        <div class="flex gap-sm">
+                                            <button class="btn btn-secondary btn-icon btn-sm" title="View">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-secondary btn-icon btn-sm" title="Edit">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="flex items-center gap-md">
+                                            <div class="avatar avatar-sm">MK</div>
+                                            <div>
+                                                <div style="font-weight: 500;">Mohammed Khan</div>
+                                                <div class="text-muted" style="font-size: 0.75rem;">m.khan@email.com
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>+92 300 123 4567</td>
+                                    <td>
+                                        <span class="badge badge-danger">
+                                            <i class="fa-solid fa-times"></i>
+                                            Rejected
+                                        </span>
+                                    </td>
+                                    <td>0</td>
+                                    <td>SAR 0</td>
+                                    <td><span class="badge badge-warning">Pending</span></td>
+                                    <td>Jan 2, 2026</td>
+                                    <td>
+                                        <div class="flex gap-sm">
+                                            <button class="btn btn-secondary btn-icon btn-sm" title="View">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-secondary btn-icon btn-sm" title="Re-review">
+                                                <i class="fa-solid fa-redo"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="pagination">
+                        <div class="pagination-info">
+                            Showing 1-5 of 3,842 customers
+                        </div>
+                        <div class="pagination-buttons">
+                            <button class="page-btn"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button class="page-btn active">1</button>
+                            <button class="page-btn">2</button>
+                            <button class="page-btn">3</button>
+                            <button class="page-btn">...</button>
+                            <button class="page-btn">769</button>
+                            <button class="page-btn"><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

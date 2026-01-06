@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>My Bookings - MobilityKSA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .bookings-header {
+            padding: var(--spacing-lg);
+            text-align: center;
+        }
+
+        .bookings-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .booking-tabs {
+            display: flex;
+            padding: 0 var(--spacing-md);
+            border-bottom: 1px solid var(--border);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .booking-tab {
+            flex: 1;
+            padding: var(--spacing-md);
+            text-align: center;
+            color: var(--text-muted);
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all var(--transition-fast);
+        }
+
+        .booking-tab.active {
+            color: var(--primary-light);
+            border-bottom-color: var(--primary-light);
+        }
+
+        .booking-tab-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            background: var(--bg-input);
+            border-radius: 10px;
+            font-size: 0.75rem;
+            margin-left: 4px;
+        }
+
+        .booking-tab.active .booking-tab-count {
+            background: var(--primary);
+            color: white;
+        }
+
+        .bookings-list {
+            padding: 0 var(--spacing-md);
+        }
+
+        .booking-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-md);
+            overflow: hidden;
+        }
+
+        .booking-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md);
+            background: var(--bg-input);
+        }
+
+        .booking-code {
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .booking-status {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .booking-status.active {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .booking-status.completed {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--info);
+        }
+
+        .booking-status.cancelled {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--error);
+        }
+
+        .booking-status.upcoming {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .booking-card-body {
+            padding: var(--spacing-md);
+        }
+
+        .booking-wheelchair {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .booking-wheelchair-image {
+            width: 70px;
+            height: 70px;
+            background: var(--bg-input);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+
+        .booking-wheelchair-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .booking-wheelchair-info {
+            flex: 1;
+        }
+
+        .booking-wheelchair-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .booking-wheelchair-station {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .booking-dates {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .booking-dates i {
+            color: var(--primary-light);
+        }
+
+        .booking-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md);
+            border-top: 1px solid var(--border);
+        }
+
+        .booking-amount {
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .booking-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .booking-action-btn {
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--bg-input);
+            border-radius: var(--radius-md);
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .booking-action-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .booking-action-btn.danger:hover {
+            background: var(--error);
+        }
+
+        .empty-bookings {
+            text-align: center;
+            padding: var(--spacing-2xl);
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .empty-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .empty-text {
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .booking-progress {
+            margin-top: var(--spacing-md);
+            padding-top: var(--spacing-md);
+            border-top: 1px dashed var(--border);
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--bg-input);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-primary);
+            border-radius: 3px;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="mobile-container">
+        <div class="screen">
+            <!-- Header -->
+            <div class="bookings-header">
+                <h1 class="bookings-title">My Bookings</h1>
+            </div>
+
+            <!-- Tabs -->
+            <div class="booking-tabs">
+                <div class="booking-tab active" data-tab="active">
+                    Active <span class="booking-tab-count">1</span>
+                </div>
+                <div class="booking-tab" data-tab="upcoming">
+                    Upcoming <span class="booking-tab-count">1</span>
+                </div>
+                <div class="booking-tab" data-tab="past">
+                    Past <span class="booking-tab-count">3</span>
+                </div>
+            </div>
+
+            <div class="screen-content" style="padding-top: 0;">
+                <!-- Active Bookings -->
+                <div class="bookings-list" id="active-bookings">
+                    <div class="booking-card">
+                        <div class="booking-card-header">
+                            <span class="booking-code">MK-2026-7842</span>
+                            <span class="booking-status active">
+                                <i class="fa-solid fa-circle" style="font-size: 6px;"></i>
+                                Active
+                            </span>
+                        </div>
+                        <div class="booking-card-body">
+                            <div class="booking-wheelchair">
+                                <div class="booking-wheelchair-image">
+                                    <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=200&h=200&fit=crop"
+                                        alt="Wheelchair">
+                                </div>
+                                <div class="booking-wheelchair-info">
+                                    <h4 class="booking-wheelchair-name">Premium Electric Wheelchair</h4>
+                                    <p class="booking-wheelchair-station">
+                                        <i class="fa-solid fa-location-dot"></i> Masjid Al-Haram, Gate 79
+                                    </p>
+                                    <div class="booking-dates">
+                                        <i class="fa-regular fa-calendar"></i>
+                                        Jan 1 - Jan 7, 2026 (7 days)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="booking-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 57%;"></div>
+                                </div>
+                                <div class="progress-text">
+                                    <span>4 days used</span>
+                                    <span>3 days left</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="booking-card-footer">
+                            <span class="booking-amount">SAR 1,052</span>
+                            <div class="booking-actions">
+                                <div class="booking-action-btn">
+                                    <i class="fa-solid fa-calendar-plus"></i>
+                                    Extend
+                                </div>
+                                <div class="booking-action-btn">
+                                    <i class="fa-solid fa-headset"></i>
+                                    Support
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Bookings -->
+                <div class="bookings-list hidden" id="upcoming-bookings">
+                    <div class="booking-card">
+                        <div class="booking-card-header">
+                            <span class="booking-code">MK-2026-8103</span>
+                            <span class="booking-status upcoming">
+                                <i class="fa-solid fa-clock"></i>
+                                Upcoming
+                            </span>
+                        </div>
+                        <div class="booking-card-body">
+                            <div class="booking-wheelchair">
+                                <div class="booking-wheelchair-image">
+                                    <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=200&h=200&fit=crop"
+                                        alt="Wheelchair">
+                                </div>
+                                <div class="booking-wheelchair-info">
+                                    <h4 class="booking-wheelchair-name">Standard Electric Wheelchair</h4>
+                                    <p class="booking-wheelchair-station">
+                                        <i class="fa-solid fa-location-dot"></i> Hilton Makkah
+                                    </p>
+                                    <div class="booking-dates">
+                                        <i class="fa-regular fa-calendar"></i>
+                                        Jan 15 - Jan 20, 2026 (5 days)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="booking-card-footer">
+                            <span class="booking-amount">SAR 750</span>
+                            <div class="booking-actions">
+                                <div class="booking-action-btn">
+                                    <i class="fa-solid fa-pen"></i>
+                                    Modify
+                                </div>
+                                <div class="booking-action-btn danger">
+                                    <i class="fa-solid fa-times"></i>
+                                    Cancel
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Past Bookings -->
+                <div class="bookings-list hidden" id="past-bookings">
+                    <div class="booking-card">
+                        <div class="booking-card-header">
+                            <span class="booking-code">MK-2025-6521</span>
+                            <span class="booking-status completed">
+                                <i class="fa-solid fa-check"></i>
+                                Completed
+                            </span>
+                        </div>
+                        <div class="booking-card-body">
+                            <div class="booking-wheelchair">
+                                <div class="booking-wheelchair-image">
+                                    <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=200&h=200&fit=crop"
+                                        alt="Wheelchair">
+                                </div>
+                                <div class="booking-wheelchair-info">
+                                    <h4 class="booking-wheelchair-name">Premium Electric Wheelchair</h4>
+                                    <p class="booking-wheelchair-station">
+                                        <i class="fa-solid fa-location-dot"></i> Masjid Al-Haram
+                                    </p>
+                                    <div class="booking-dates">
+                                        <i class="fa-regular fa-calendar"></i>
+                                        Dec 20 - Dec 27, 2025
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="booking-card-footer">
+                            <span class="booking-amount">SAR 980</span>
+                            <div class="booking-actions">
+                                <div class="booking-action-btn">
+                                    <i class="fa-solid fa-star"></i>
+                                    Rate
+                                </div>
+                                <div class="booking-action-btn">
+                                    <i class="fa-solid fa-redo"></i>
+                                    Book Again
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="booking-card">
+                        <div class="booking-card-header">
+                            <span class="booking-code">MK-2025-5892</span>
+                            <span class="booking-status cancelled">
+                                <i class="fa-solid fa-ban"></i>
+                                Cancelled
+                            </span>
+                        </div>
+                        <div class="booking-card-body">
+                            <div class="booking-wheelchair">
+                                <div class="booking-wheelchair-image">
+                                    <img src="https://images.unsplash.com/photo-1631815587646-b85a1bb027e1?w=200&h=200&fit=crop"
+                                        alt="Wheelchair">
+                                </div>
+                                <div class="booking-wheelchair-info">
+                                    <h4 class="booking-wheelchair-name">Heavy Duty Wheelchair</h4>
+                                    <p class="booking-wheelchair-station">
+                                        <i class="fa-solid fa-location-dot"></i> King Faisal Hospital
+                                    </p>
+                                    <div class="booking-dates">
+                                        <i class="fa-regular fa-calendar"></i>
+                                        Nov 10 - Nov 15, 2025
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="booking-card-footer">
+                            <span class="booking-amount"
+                                style="text-decoration: line-through; color: var(--text-muted);">SAR 1,200</span>
+                            <div class="booking-actions">
+                                <div class="booking-action-btn">
+                                    <i class="fa-solid fa-redo"></i>
+                                    Book Again
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Navigation -->
+            <nav class="bottom-nav">
+                <a href="home.html" class="nav-item">
+                    <i class="fa-solid fa-home nav-icon"></i>
+                    <span class="nav-label">Home</span>
+                </a>
+                <a href="wheelchairs.html" class="nav-item">
+                    <i class="fa-solid fa-wheelchair nav-icon"></i>
+                    <span class="nav-label">Browse</span>
+                </a>
+                <a href="bookings.html" class="nav-item active">
+                    <i class="fa-solid fa-receipt nav-icon"></i>
+                    <span class="nav-label">Bookings</span>
+                </a>
+                <a href="profile.html" class="nav-item">
+                    <i class="fa-solid fa-user nav-icon"></i>
+                    <span class="nav-label">Profile</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching
+        document.querySelectorAll('.booking-tab').forEach(tab => {
+            tab.addEventListener('click', function () {
+                document.querySelectorAll('.booking-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+
+                const tabName = this.dataset.tab;
+                document.querySelectorAll('.bookings-list').forEach(list => list.classList.add('hidden'));
+                document.getElementById(`${tabName}-bookings`).classList.remove('hidden');
+            });
+        });
+    </script>
+</body>
+
+</html>

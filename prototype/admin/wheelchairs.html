@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wheelchairs - MobilityKSA Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <style>
+        .filter-bar {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+            flex-wrap: wrap;
+        }
+
+        .filter-bar .form-input {
+            width: auto;
+            min-width: 150px;
+        }
+
+        .filter-bar .search-input {
+            width: 300px;
+        }
+
+        .wheelchair-image {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-md);
+            object-fit: cover;
+            background: var(--bg-input);
+        }
+
+        .wheelchair-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .wheelchair-name {
+            font-weight: 600;
+        }
+
+        .wheelchair-code {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-input);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .modal-close:hover {
+            background: var(--border);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: var(--spacing-lg);
+            overflow-y: auto;
+            max-height: calc(90vh - 140px);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-lg);
+            border-top: 1px solid var(--border);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-md);
+        }
+
+        .upload-area {
+            border: 2px dashed var(--border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary-light);
+            background: rgba(27, 77, 62, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 2rem;
+            color: var(--primary-light);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .upload-text {
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .upload-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fa-solid fa-wheelchair"></i>
+                </div>
+                <div class="sidebar-brand">Mobility<span>KSA</span></div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main Menu</div>
+                    <a href="dashboard.html" class="nav-item">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        Dashboard
+                    </a>
+                    <a href="bookings.html" class="nav-item">
+                        <i class="fa-solid fa-calendar-check"></i>
+                        Bookings
+                        <span class="nav-item-badge">12</span>
+                    </a>
+                    <a href="wheelchairs.html" class="nav-item active">
+                        <i class="fa-solid fa-wheelchair"></i>
+                        Wheelchairs
+                    </a>
+                    <a href="users.html" class="nav-item">
+                        <i class="fa-solid fa-users"></i>
+                        Customers
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Management</div>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-location-dot"></i>
+                        Stations
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-credit-card"></i>
+                        Payments
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-ticket"></i>
+                        Promo Codes
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Reports</div>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-chart-line"></i>
+                        Analytics
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-file-invoice"></i>
+                        Finance
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">System</div>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-cog"></i>
+                        Settings
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-user-shield"></i>
+                        Admins
+                    </a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sidebar-user">
+                    <div class="user-avatar">AD</div>
+                    <div class="user-info">
+                        <div class="user-name">Admin User</div>
+                        <div class="user-role">Super Admin</div>
+                    </div>
+                    <i class="fa-solid fa-ellipsis-vertical" style="color: var(--text-muted);"></i>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="main-header">
+                <div class="header-left">
+                    <h1 class="page-title">Wheelchairs</h1>
+                    <div class="breadcrumb">
+                        <a href="dashboard.html">Dashboard</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size: 0.75rem;"></i>
+                        <span>Wheelchairs</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="btn btn-primary" onclick="openModal()">
+                        <i class="fa-solid fa-plus"></i>
+                        Add Wheelchair
+                    </button>
+                </div>
+            </header>
+
+            <div class="page-content">
+                <!-- Stats -->
+                <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr);">
+                    <div class="stat-card">
+                        <div class="stat-icon primary">
+                            <i class="fa-solid fa-wheelchair"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-label">Total Wheelchairs</div>
+                            <div class="stat-value">60</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon success">
+                            <i class="fa-solid fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-label">Available</div>
+                            <div class="stat-value">39</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon info">
+                            <i class="fa-solid fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-label">Rented</div>
+                            <div class="stat-value">16</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon warning">
+                            <i class="fa-solid fa-wrench"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-label">Maintenance</div>
+                            <div class="stat-value">5</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="filter-bar" style="margin: 0;">
+                            <div class="header-search search-input" style="width: 300px;">
+                                <i class="fa-solid fa-search" style="color: var(--text-muted);"></i>
+                                <input type="text" placeholder="Search by code or model...">
+                            </div>
+                            <select class="form-input form-select">
+                                <option value="">All Types</option>
+                                <option>Standard Electric</option>
+                                <option>Premium Electric</option>
+                                <option>Heavy Duty</option>
+                            </select>
+                            <select class="form-input form-select">
+                                <option value="">All Status</option>
+                                <option>Available</option>
+                                <option>Rented</option>
+                                <option>Maintenance</option>
+                            </select>
+                            <select class="form-input form-select">
+                                <option value="">All Stations</option>
+                                <option>Masjid Al-Haram</option>
+                                <option>Hilton Makkah</option>
+                                <option>King Faisal Hospital</option>
+                            </select>
+                        </div>
+                        <div>
+                            <button class="btn btn-secondary btn-sm">
+                                <i class="fa-solid fa-download"></i>
+                                Export
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Wheelchair</th>
+                                    <th>Type</th>
+                                    <th>Station</th>
+                                    <th>Battery</th>
+                                    <th>Status</th>
+                                    <th>Daily Rate</th>
+                                    <th>Last Maintenance</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="wheelchair-info">
+                                            <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=100&h=100&fit=crop"
+                                                class="wheelchair-image">
+                                            <div>
+                                                <div class="wheelchair-name">MK-PRO 2025</div>
+                                                <div class="wheelchair-code">WC-001</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>Premium Electric</td>
+                                    <td>Masjid Al-Haram</td>
+                                    <td>
+                                        <div class="flex items-center gap-sm">
+                                            <i class="fa-solid fa-battery-three-quarters text-success"></i>
+                                            85%
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-success">Available</span></td>
+                                    <td>SAR 100</td>
+                                    <td>Dec 28, 2025</td>
+                                    <td>
+                                        <div class="flex gap-sm">
+                                            <button class="btn btn-secondary btn-icon btn-sm" title="Edit">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </button>
+                                            <button class="btn btn-secondary btn-icon btn-sm" title="View">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="wheelchair-info">
+                                            <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=100&h=100&fit=crop"
+                                                class="wheelchair-image">
+                                            <div>
+                                                <div class="wheelchair-name">MK-STD 2025</div>
+                                                <div class="wheelchair-code">WC-002</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>Standard Electric</td>
+                                    <td>Hilton Makkah</td>
+                                    <td>
+                                        <div class="flex items-center gap-sm">
+                                            <i class="fa-solid fa-battery-full text-success"></i>
+                                            100%
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-info">Rented</span></td>
+                                    <td>SAR 50</td>
+                                    <td>Dec 25, 2025</td>
+                                    <td>
+                                        <div class="flex gap-sm">
+                                            <button class="btn btn-secondary btn-icon btn-sm" title="Edit">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </button>
+                                            <button class="btn btn-secondary btn-icon btn-sm" title="View">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="wheelchair-info">
+                                            <img src="https://images.unsplash.com/photo-1631815587646-b85a1bb027e1?w=100&h=100&fit=crop"
+                                                class="wheelchair-image">
+                                            <div>
+                                                <div class="wheelchair-name">MK-HD 2025</div>
+                                                <div class="wheelchair-code">WC-003</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>Heavy Duty</td>
+                                    <td>King Faisal Hospital</td>
+                                    <td>
+                                        <div class="flex items-center gap-sm">
+                                            <i class="fa-solid fa-battery-quarter" style="color: var(--error);"></i>
+                                            15%
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-warning">Maintenance</span></td>
+                                    <td>SAR 150</td>
+                                    <td>Dec 20, 2025</td>
+                                    <td>
+                                        <div class="flex gap-sm">
+                                            <button class="btn btn-secondary btn-icon btn-sm" title="Edit">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </button>
+                                            <button class="btn btn-secondary btn-icon btn-sm" title="View">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="wheelchair-info">
+                                            <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=100&h=100&fit=crop"
+                                                class="wheelchair-image">
+                                            <div>
+                                                <div class="wheelchair-name">MK-PRO 2025</div>
+                                                <div class="wheelchair-code">WC-004</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>Premium Electric</td>
+                                    <td>Masjid Al-Haram</td>
+                                    <td>
+                                        <div class="flex items-center gap-sm">
+                                            <i class="fa-solid fa-battery-half" style="color: var(--warning);"></i>
+                                            50%
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-success">Available</span></td>
+                                    <td>SAR 100</td>
+                                    <td>Dec 30, 2025</td>
+                                    <td>
+                                        <div class="flex gap-sm">
+                                            <button class="btn btn-secondary btn-icon btn-sm" title="Edit">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </button>
+                                            <button class="btn btn-secondary btn-icon btn-sm" title="View">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="wheelchair-info">
+                                            <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=100&h=100&fit=crop"
+                                                class="wheelchair-image">
+                                            <div>
+                                                <div class="wheelchair-name">MK-STD 2025</div>
+                                                <div class="wheelchair-code">WC-005</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>Standard Electric</td>
+                                    <td>Masjid Al-Haram</td>
+                                    <td>
+                                        <div class="flex items-center gap-sm">
+                                            <i class="fa-solid fa-battery-full text-success"></i>
+                                            95%
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-info">Rented</span></td>
+                                    <td>SAR 50</td>
+                                    <td>Dec 27, 2025</td>
+                                    <td>
+                                        <div class="flex gap-sm">
+                                            <button class="btn btn-secondary btn-icon btn-sm" title="Edit">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </button>
+                                            <button class="btn btn-secondary btn-icon btn-sm" title="View">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="pagination">
+                        <div class="pagination-info">
+                            Showing 1-5 of 60 wheelchairs
+                        </div>
+                        <div class="pagination-buttons">
+                            <button class="page-btn"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button class="page-btn active">1</button>
+                            <button class="page-btn">2</button>
+                            <button class="page-btn">3</button>
+                            <button class="page-btn">...</button>
+                            <button class="page-btn">12</button>
+                            <button class="page-btn"><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Wheelchair Modal -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Add New Wheelchair</h2>
+                <div class="modal-close" onclick="closeModal()">
+                    <i class="fa-solid fa-times"></i>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Wheelchair Code</label>
+                    <input type="text" class="form-input" placeholder="e.g., WC-006">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Type</label>
+                        <select class="form-input form-select">
+                            <option>Standard Electric</option>
+                            <option>Premium Electric</option>
+                            <option>Heavy Duty</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Station</label>
+                        <select class="form-input form-select">
+                            <option>Masjid Al-Haram</option>
+                            <option>Hilton Makkah</option>
+                            <option>King Faisal Hospital</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Brand</label>
+                        <input type="text" class="form-input" placeholder="e.g., MobilityKSA">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Model</label>
+                        <input type="text" class="form-input" placeholder="e.g., MK-PRO 2025">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Battery Capacity (km)</label>
+                        <input type="number" class="form-input" placeholder="e.g., 30">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Max Weight (kg)</label>
+                        <input type="number" class="form-input" placeholder="e.g., 150">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Photos</label>
+                    <div class="upload-area">
+                        <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                        <p class="upload-text">Click to upload or drag and drop</p>
+                        <p class="upload-hint">PNG, JPG up to 5MB</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary">
+                    <i class="fa-solid fa-save"></i>
+                    Save Wheelchair
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal() {
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        // Close modal on overlay click
+        document.getElementById('modal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>MobilityKSA - Electric Wheelchair Rental</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* Login specific styles */
+    .login-screen {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: var(--gradient-dark);
+    }
+    
+    .login-header {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--spacing-2xl);
+      text-align: center;
+    }
+    
+    .logo-container {
+      width: 120px;
+      height: 120px;
+      background: var(--gradient-primary);
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: var(--spacing-lg);
+      box-shadow: var(--shadow-xl);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .logo-container::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%);
+      animation: shimmer 3s infinite;
+    }
+    
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    
+    .logo-icon {
+      font-size: 3.5rem;
+      color: white;
+    }
+    
+    .app-name {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: var(--spacing-sm);
+      background: linear-gradient(135deg, #fff 0%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .app-tagline {
+      color: var(--text-secondary);
+      font-size: 1rem;
+    }
+    
+    .login-form {
+      background: var(--bg-card);
+      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+      padding: var(--spacing-xl);
+      border-top: 1px solid var(--glass-border);
+    }
+    
+    .login-title {
+      font-size: 1.5rem;
+      margin-bottom: var(--spacing-sm);
+    }
+    
+    .login-subtitle {
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-xl);
+    }
+    
+    .social-login {
+      display: flex;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .social-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-md);
+      background: var(--bg-input);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    
+    .social-btn:hover {
+      background: var(--border);
+      transform: translateY(-2px);
+    }
+    
+    .terms-text {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: var(--spacing-lg);
+    }
+    
+    .terms-text a {
+      color: var(--primary-light);
+      text-decoration: none;
+    }
+    
+    .language-selector {
+      position: absolute;
+      top: var(--spacing-md);
+      right: var(--spacing-md);
+      display: flex;
+      gap: var(--spacing-xs);
+    }
+    
+    .lang-btn {
+      padding: var(--spacing-xs) var(--spacing-sm);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    
+    .lang-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    
+    /* OTP Screen */
+    .otp-screen {
+      padding: var(--spacing-xl);
+    }
+    
+    .back-button {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-input);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      margin-bottom: var(--spacing-xl);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    
+    .back-button:hover {
+      background: var(--border);
+    }
+    
+    .otp-title {
+      font-size: 1.5rem;
+      margin-bottom: var(--spacing-sm);
+    }
+    
+    .otp-subtitle {
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-xl);
+    }
+    
+    .phone-display {
+      color: var(--primary-light);
+      font-weight: 600;
+    }
+    
+    .resend-text {
+      text-align: center;
+      margin-top: var(--spacing-lg);
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+    
+    .resend-link {
+      color: var(--primary-light);
+      cursor: pointer;
+      text-decoration: none;
+    }
+    
+    .countdown {
+      color: var(--secondary);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="mobile-container">
+    <!-- Login Screen -->
+    <div id="login-screen" class="login-screen">
+      <div class="language-selector">
+        <button class="lang-btn active" data-lang="en">EN</button>
+        <button class="lang-btn" data-lang="ar">عربي</button>
+        <button class="lang-btn" data-lang="id">ID</button>
+      </div>
+      
+      <div class="login-header">
+        <div class="logo-container">
+          <i class="fa-solid fa-wheelchair logo-icon"></i>
+        </div>
+        <h1 class="app-name">MobilityKSA</h1>
+        <p class="app-tagline">Electric Wheelchair Rental</p>
+      </div>
+      
+      <div class="login-form">
+        <h2 class="login-title">Welcome</h2>
+        <p class="login-subtitle">Sign in to continue</p>
+        
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <div class="phone-input-wrapper">
+            <select class="form-input country-code">
+              <option value="+966">🇸🇦 +966</option>
+              <option value="+62">🇮🇩 +62</option>
+              <option value="+1">🇺🇸 +1</option>
+              <option value="+44">🇬🇧 +44</option>
+            </select>
+            <input type="tel" class="form-input phone-number" placeholder="5XX XXX XXXX" id="phone-input">
+          </div>
+        </div>
+        
+        <button class="btn btn-primary btn-full btn-lg" onclick="showOtpScreen()">
+          <i class="fa-solid fa-paper-plane"></i>
+          Send OTP
+        </button>
+        
+        <div class="divider-text">or continue with</div>
+        
+        <div class="social-login">
+          <button class="social-btn">
+            <i class="fa-brands fa-google"></i>
+            Google
+          </button>
+          <button class="social-btn">
+            <i class="fa-brands fa-apple"></i>
+            Apple
+          </button>
+        </div>
+        
+        <p class="terms-text">
+          By continuing, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+        </p>
+      </div>
+    </div>
+    
+    <!-- OTP Verification Screen -->
+    <div id="otp-screen" class="screen otp-screen hidden">
+      <div class="back-button" onclick="showLoginScreen()">
+        <i class="fa-solid fa-arrow-left"></i>
+      </div>
+      
+      <h1 class="otp-title">Verify Phone</h1>
+      <p class="otp-subtitle">
+        Enter the 6-digit code sent to<br>
+        <span class="phone-display" id="phone-display">+966 5XX XXX XXXX</span>
+      </p>
+      
+      <div class="otp-container">
+        <input type="text" class="otp-input" maxlength="1" inputmode="numeric" autofocus>
+        <input type="text" class="otp-input" maxlength="1" inputmode="numeric">
+        <input type="text" class="otp-input" maxlength="1" inputmode="numeric">
+        <input type="text" class="otp-input" maxlength="1" inputmode="numeric">
+        <input type="text" class="otp-input" maxlength="1" inputmode="numeric">
+        <input type="text" class="otp-input" maxlength="1" inputmode="numeric">
+      </div>
+      
+      <p class="resend-text">
+        Didn't receive the code? <a href="#" class="resend-link">Resend</a> in <span class="countdown">00:59</span>
+      </p>
+      
+      <div class="mt-lg">
+        <button class="btn btn-primary btn-full btn-lg" onclick="window.location.href='register.html'">
+          <i class="fa-solid fa-check"></i>
+          Verify
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Screen navigation
+    function showOtpScreen() {
+      const phone = document.getElementById('phone-input').value;
+      const countryCode = document.querySelector('.country-code').value;
+      
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('otp-screen').classList.remove('hidden');
+      document.getElementById('phone-display').textContent = countryCode + ' ' + phone;
+      
+      // Focus first OTP input
+      document.querySelector('.otp-input').focus();
+      
+      // Start countdown
+      startCountdown();
+    }
+    
+    function showLoginScreen() {
+      document.getElementById('otp-screen').classList.add('hidden');
+      document.getElementById('login-screen').classList.remove('hidden');
+    }
+    
+    // OTP Input handling
+    const otpInputs = document.querySelectorAll('.otp-input');
+    otpInputs.forEach((input, index) => {
+      input.addEventListener('input', (e) => {
+        if (e.target.value.length === 1 && index < otpInputs.length - 1) {
+          otpInputs[index + 1].focus();
+        }
+      });
+      
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !e.target.value && index > 0) {
+          otpInputs[index - 1].focus();
+        }
+      });
+    });
+    
+    // Countdown timer
+    function startCountdown() {
+      let seconds = 59;
+      const countdownEl = document.querySelector('.countdown');
+      
+      const interval = setInterval(() => {
+        seconds--;
+        countdownEl.textContent = `00:${seconds.toString().padStart(2, '0')}`;
+        
+        if (seconds <= 0) {
+          clearInterval(interval);
+          document.querySelector('.resend-link').style.pointerEvents = 'auto';
+          document.querySelector('.resend-text').innerHTML = 
+            'Didn\'t receive the code? <a href="#" class="resend-link" onclick="resendOtp()">Resend now</a>';
+        }
+      }, 1000);
+    }
+    
+    function resendOtp() {
+      startCountdown();
+    }
+    
+    // Language selector
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        const lang = btn.dataset.lang;
+        if (lang === 'ar') {
+          document.documentElement.setAttribute('dir', 'rtl');
+          document.documentElement.setAttribute('lang', 'ar');
+        } else {
+          document.documentElement.setAttribute('dir', 'ltr');
+          document.documentElement.setAttribute('lang', lang);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
