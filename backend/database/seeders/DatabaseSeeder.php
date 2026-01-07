@@ -13,11 +13,13 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            CitySeeder::class,
             StationSeeder::class,
             WheelchairTypeSeeder::class,
             WheelchairSeeder::class,
             UserSeeder::class,
             BookingSeeder::class,
+            SettingSeeder::class,
         ]);
 
         $this->command->info('✅ MobilityKSA database seeded successfully!');

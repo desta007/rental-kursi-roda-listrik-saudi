@@ -12,7 +12,8 @@ class Station extends Model
     protected $fillable = [
         'name',
         'name_ar',
-        'city',
+        'city_id',
+        'city', // Keep for backward compatibility
         'address',
         'address_ar',
         'latitude',
@@ -28,6 +29,14 @@ class Station extends Model
         'longitude' => 'decimal:8',
         'is_active' => 'boolean',
     ];
+
+    /**
+     * Get the city this station belongs to.
+     */
+    public function cityRelation()
+    {
+        return $this->belongsTo(City::class, 'city_id');
+    }
 
     /**
      * Get the wheelchairs at this station.
@@ -60,4 +69,13 @@ class Station extends Model
     {
         return $query->where('is_active', true);
     }
+
+    /**
+     * Get the city name (from relation or legacy field).
+     */
+    public function getCityNameAttribute(): string
+    {
+        return $this->cityRelation?->name ?? $this->city ?? '';
+    }
 }
+
