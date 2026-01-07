@@ -123,6 +123,20 @@
                                 <i class="fa-solid fa-check-circle"></i>
                             </div>
                         </label>
+
+                        <label class="payment-method">
+                            <input type="radio" name="payment_method" value="cash" style="display: none;">
+                            <div class="payment-method-icon" style="background: #f59e0b;">
+                                <i class="fa-solid fa-money-bill-wave"></i>
+                            </div>
+                            <div class="payment-method-info">
+                                <div class="payment-method-name">Cash</div>
+                                <div class="payment-method-desc">Pay at Pickup (Testing)</div>
+                            </div>
+                            <div class="payment-method-check">
+                                <i class="fa-solid fa-check-circle"></i>
+                            </div>
+                        </label>
                     </div>
                 </div>
             </div>
@@ -141,7 +155,7 @@
             <div class="footer-total-label">Total Amount</div>
             <div class="footer-total-value">SAR {{ number_format($booking->total_amount, 0) }}</div>
         </div>
-        <button type="submit" form="paymentForm" class="btn btn-primary btn-lg">
+        <button type="submit" form="paymentForm" class="btn btn-primary">
             <i class="fa-solid fa-lock"></i>
             Pay Now
         </button>
@@ -351,7 +365,7 @@
 
         .booking-footer {
             position: fixed;
-            bottom: 0;
+            bottom: 70px;
             left: 50%;
             transform: translateX(-50%);
             width: 100%;

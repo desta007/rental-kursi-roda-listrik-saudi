@@ -169,7 +169,7 @@
                 <div class="footer-total-label">Estimated Total</div>
                 <div class="footer-total-value" id="estimatedTotal">SAR {{ number_format($wheelchair->wheelchairType->weekly_rate + $wheelchair->wheelchairType->deposit_amount, 0) }}</div>
             </div>
-            <button type="submit" class="btn btn-primary btn-lg">
+            <button type="submit" class="btn btn-primary">
                 <i class="fa-solid fa-arrow-right"></i>
                 Continue
             </button>
@@ -399,7 +399,7 @@
 
     .booking-footer {
         position: fixed;
-        bottom: 0;
+        bottom: 70px;
         left: 50%;
         transform: translateX(-50%);
         width: 100%;
@@ -436,6 +436,59 @@
 
 @push('scripts')
 <script>
+    // Pricing data from PHP
+    const pricingData = {
+        dailyRate: {{ $wheelchair->wheelchairType->daily_rate }},
+        weeklyRate: {{ $wheelchair->wheelchairType->weekly_rate }},
+        monthlyRate: {{ $wheelchair->wheelchairType->monthly_rate }},
+        depositAmount: {{ $wheelchair->wheelchairType->deposit_amount }},
+        deliveryFee: 30,
+        vatRate: 0.15
+    };
+
+    // Calculate rental rate based on days (same logic as PHP calculateRate)
+    function calculateRentalRate(days) {
+        if (days >= 30) {
+            return pricingData.monthlyRate * Math.ceil(days / 30);
+        } else if (days >= 7) {
+            return pricingData.weeklyRate * Math.ceil(days / 7);
+        } else {
+            return pricingData.dailyRate * days;
+        }
+    }
+
+    // Calculate and update estimated total
+    function updateEstimatedTotal() {
+        const startDate = new Date(document.querySelector('input[name="start_date"]').value);
+        const endDate = new Date(document.querySelector('input[name="end_date"]').value);
+        
+        // Calculate days
+        const timeDiff = endDate - startDate;
+        const days = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+        
+        if (days <= 0 || isNaN(days)) {
+            document.getElementById('estimatedTotal').textContent = 'SAR 0';
+            return;
+        }
+
+        // Calculate rental amount
+        const rentalAmount = calculateRentalRate(days);
+        
+        // Check pickup type
+        const pickupType = document.querySelector('input[name="pickup_type"]:checked')?.value || 'self';
+        const deliveryFee = pickupType === 'delivery' ? pricingData.deliveryFee : 0;
+        
+        // Calculate subtotal and VAT
+        const subtotal = rentalAmount + deliveryFee;
+        const vatAmount = subtotal * pricingData.vatRate;
+        
+        // Total with deposit
+        const total = subtotal + vatAmount + pricingData.depositAmount;
+        
+        // Update display
+        document.getElementById('estimatedTotal').textContent = 'SAR ' + Math.round(total).toLocaleString();
+    }
+
     // Pickup option toggle
     document.querySelectorAll('.pickup-option').forEach(option => {
         option.addEventListener('click', function() {
@@ -453,6 +506,9 @@
                 addressForm.classList.add('hidden');
                 stationSelection.classList.remove('hidden');
             }
+
+            // Update total when pickup method changes
+            updateEstimatedTotal();
         });
     });
 
@@ -469,7 +525,17 @@
 
             document.querySelector('input[name="start_date"]').value = startDate.toISOString().split('T')[0];
             document.querySelector('input[name="end_date"]').value = endDate.toISOString().split('T')[0];
+
+            // Update total when duration changes
+            updateEstimatedTotal();
         });
     });
+
+    // Date input change listeners
+    document.querySelector('input[name="start_date"]').addEventListener('change', updateEstimatedTotal);
+    document.querySelector('input[name="end_date"]').addEventListener('change', updateEstimatedTotal);
+
+    // Initial calculation on page load
+    updateEstimatedTotal();
 </script>
 @endpush

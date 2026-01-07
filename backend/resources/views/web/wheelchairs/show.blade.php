@@ -189,13 +189,12 @@
             <span class="footer-price-unit">/ day</span>
         </div>
         @auth
-            <a href="{{ route('bookings.create', $wheelchair) }}" class="btn btn-primary btn-lg">
+            <a href="{{ route('bookings.create', $wheelchair) }}" class="btn btn-primary">
                 <i class="fa-solid fa-calendar-check"></i>
                 Book Now
             </a>
         @else
-            <a href="{{ route('web.login') }}?redirect={{ route('bookings.create', $wheelchair) }}"
-                class="btn btn-primary btn-lg">
+            <a href="{{ route('web.login') }}?redirect={{ route('bookings.create', $wheelchair) }}" class="btn btn-primary">
                 <i class="fa-solid fa-calendar-check"></i>
                 Login to Book
             </a>

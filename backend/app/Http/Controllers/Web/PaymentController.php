@@ -35,7 +35,7 @@ class PaymentController extends Controller
     {
         $validated = $request->validate([
             'booking_id' => 'required|exists:bookings,id',
-            'payment_method' => 'required|in:card,apple_pay,mada',
+            'payment_method' => 'required|in:card,apple_pay,mada,cash',
         ]);
 
         $booking = Booking::findOrFail($validated['booking_id']);
