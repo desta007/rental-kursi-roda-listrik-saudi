@@ -126,6 +126,22 @@ class Booking extends Model
     }
 
     /**
+     * Check if booking can be picked up.
+     */
+    public function canBePickedUp(): bool
+    {
+        return $this->status === 'confirmed';
+    }
+
+    /**
+     * Check if booking can be returned.
+     */
+    public function canBeReturned(): bool
+    {
+        return $this->status === 'active';
+    }
+
+    /**
      * Scope by status.
      */
     public function scopeStatus($query, $status)

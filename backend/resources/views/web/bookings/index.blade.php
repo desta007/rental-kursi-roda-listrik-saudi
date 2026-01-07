@@ -9,12 +9,20 @@
 
     <div class="screen-content">
         <!-- Status Tabs -->
-        <div class="tabs">
-            <a href="{{ route('bookings.index') }}" class="tab {{ $status == 'all' ? 'active' : '' }}">All</a>
-            <a href="{{ route('bookings.index', ['status' => 'active']) }}"
-                class="tab {{ $status == 'active' ? 'active' : '' }}">Active</a>
-            <a href="{{ route('bookings.index', ['status' => 'completed']) }}"
-                class="tab {{ $status == 'completed' ? 'active' : '' }}">Completed</a>
+        <div class="tabs-wrapper">
+            <div class="tabs tabs-scrollable">
+                <a href="{{ route('bookings.index') }}" class="tab {{ $status == 'all' ? 'active' : '' }}">All</a>
+                <a href="{{ route('bookings.index', ['status' => 'pending']) }}"
+                    class="tab {{ $status == 'pending' ? 'active' : '' }}">Pending</a>
+                <a href="{{ route('bookings.index', ['status' => 'confirmed']) }}"
+                    class="tab {{ $status == 'confirmed' ? 'active' : '' }}">Confirmed</a>
+                <a href="{{ route('bookings.index', ['status' => 'active']) }}"
+                    class="tab {{ $status == 'active' ? 'active' : '' }}">Active</a>
+                <a href="{{ route('bookings.index', ['status' => 'completed']) }}"
+                    class="tab {{ $status == 'completed' ? 'active' : '' }}">Completed</a>
+                <a href="{{ route('bookings.index', ['status' => 'cancelled']) }}"
+                    class="tab {{ $status == 'cancelled' ? 'active' : '' }}">Cancelled</a>
+            </div>
         </div>
 
         @if(session('success'))
@@ -42,6 +50,13 @@
                     </div>
                     <div class="booking-card-info">
                         <h4 class="booking-wheelchair-name">{{ $booking->wheelchair->wheelchairType->name }}</h4>
+                        <p class="booking-wheelchair-details">
+                            <span class="wheelchair-code">{{ $booking->wheelchair->code }}</span>
+                            @if($booking->wheelchair->brand || $booking->wheelchair->model)
+                                <span class="wheelchair-spec">{{ $booking->wheelchair->brand }}
+                                    {{ $booking->wheelchair->model }}</span>
+                            @endif
+                        </p>
                         <p class="booking-dates">
                             <i class="fa-regular fa-calendar"></i>
                             {{ $booking->start_date->format('M j') }} - {{ $booking->end_date->format('M j, Y') }}
@@ -133,7 +148,52 @@
         .booking-wheelchair-name {
             font-weight: 600;
             font-size: 1rem;
+            margin-bottom: 2px;
+        }
+
+        .booking-wheelchair-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-xs);
             margin-bottom: var(--spacing-xs);
+        }
+
+        .wheelchair-code {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--primary);
+            background: rgba(139, 92, 246, 0.15);
+            padding: 2px 6px;
+            border-radius: var(--radius-sm);
+        }
+
+        .wheelchair-spec {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .tabs-wrapper {
+            margin: 0 calc(var(--spacing-md) * -1);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .tabs-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tabs-scrollable {
+            display: flex;
+            flex-wrap: nowrap;
+            padding: 0 var(--spacing-md);
+            min-width: max-content;
+        }
+
+        .tabs-scrollable .tab {
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .booking-dates,

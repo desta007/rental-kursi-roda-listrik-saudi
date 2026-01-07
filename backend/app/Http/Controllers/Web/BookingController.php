@@ -149,4 +149,64 @@ class BookingController extends Controller
         return redirect()->route('bookings.index')
             ->with('success', 'Booking cancelled successfully.');
     }
+
+    /**
+     * Mark booking as picked up.
+     */
+    public function pickup(Booking $booking)
+    {
+        // Validate ownership
+        if ($booking->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        // Validate status - only confirmed bookings can be picked up
+        if ($booking->status !== 'confirmed') {
+            return back()->withErrors(['booking' => 'This booking cannot be picked up.']);
+        }
+
+        // Update booking status and timestamp
+        $booking->update([
+            'status' => 'active',
+            'picked_up_at' => now(),
+        ]);
+
+        // Update wheelchair status to rented
+        $booking->wheelchair->update([
+            'status' => 'rented',
+        ]);
+
+        return redirect()->route('bookings.show', $booking)
+            ->with('success', 'Wheelchair picked up successfully! Enjoy your rental.');
+    }
+
+    /**
+     * Mark booking as returned.
+     */
+    public function returnWheelchair(Booking $booking)
+    {
+        // Validate ownership
+        if ($booking->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        // Validate status - only active bookings can be returned
+        if ($booking->status !== 'active') {
+            return back()->withErrors(['booking' => 'This booking cannot be returned.']);
+        }
+
+        // Update booking status and timestamp
+        $booking->update([
+            'status' => 'completed',
+            'returned_at' => now(),
+        ]);
+
+        // Update wheelchair status to available
+        $booking->wheelchair->update([
+            'status' => 'available',
+        ]);
+
+        return redirect()->route('bookings.show', $booking)
+            ->with('success', 'Wheelchair returned successfully! Thank you for using MobilityKSA.');
+    }
 }

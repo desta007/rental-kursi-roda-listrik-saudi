@@ -41,6 +41,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
     Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
     Route::post('/bookings/{booking}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
+    Route::post('/bookings/{booking}/pickup', [BookingController::class, 'pickup'])->name('bookings.pickup');
+    Route::post('/bookings/{booking}/return', [BookingController::class, 'returnWheelchair'])->name('bookings.return');
 
     // Payment
     Route::get('/payment/{booking}', [PaymentController::class, 'checkout'])->name('payment.checkout');

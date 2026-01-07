@@ -138,6 +138,28 @@
         </div>
 
         <!-- Actions -->
+        @if($booking->canBePickedUp())
+            <form action="{{ route('bookings.pickup', $booking) }}" method="POST"
+                onsubmit="return confirm('Confirm that you have picked up the wheelchair?');">
+                @csrf
+                <button type="submit" class="btn btn-primary btn-full" style="margin-bottom: var(--spacing-md);">
+                    <i class="fa-solid fa-hand-holding"></i>
+                    Pickup Wheelchair
+                </button>
+            </form>
+        @endif
+
+        @if($booking->canBeReturned())
+            <form action="{{ route('bookings.return', $booking) }}" method="POST"
+                onsubmit="return confirm('Confirm that you are returning the wheelchair?');">
+                @csrf
+                <button type="submit" class="btn btn-success btn-full" style="margin-bottom: var(--spacing-md);">
+                    <i class="fa-solid fa-arrow-rotate-left"></i>
+                    Return Wheelchair
+                </button>
+            </form>
+        @endif
+
         @if($booking->canBeCancelled())
             <form action="{{ route('bookings.cancel', $booking) }}" method="POST"
                 onsubmit="return confirm('Are you sure you want to cancel this booking?');">

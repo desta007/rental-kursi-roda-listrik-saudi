@@ -32,13 +32,23 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        // Combine country code with phone for lookup
-        $fullPhone = $validated['country_code'] . $validated['phone'];
+        // Normalize phone: remove spaces, dashes, dots
+        $normalizedPhone = preg_replace('/[\s\-\.]/', '', $validated['phone']);
+        $normalizedCountryCode = preg_replace('/[\s\-\.]/', '', $validated['country_code']);
 
-        // Find user by phone (try both with and without country code)
-        $user = User::where('phone', $fullPhone)
-            ->orWhere('phone', $validated['phone'])
-            ->first();
+        // Combine country code with phone for lookup
+        $fullPhone = $normalizedCountryCode . $normalizedPhone;
+
+        // Find user by phone - check multiple formats since database might have spaces
+        $user = User::where(function ($query) use ($fullPhone, $normalizedPhone, $normalizedCountryCode) {
+            // Try exact match
+            $query->where('phone', $fullPhone)
+                // Try without country code
+                ->orWhere('phone', $normalizedPhone)
+                // Try with spaces in country code format (e.g., "+966 512345678")
+                ->orWhereRaw("REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '.', '') = ?", [$fullPhone])
+                ->orWhereRaw("REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '.', '') = ?", [$normalizedPhone]);
+        })->first();
 
         if (!$user || !Hash::check($validated['password'], $user->password)) {
             return back()->withErrors(['phone' => 'Invalid phone number or password.'])->withInput();
